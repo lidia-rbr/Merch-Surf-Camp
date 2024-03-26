@@ -41,45 +41,7 @@ function displayAddSalesForm() {
  * @param {object} formData
  * @return {string} res
  */
-function treatAndPrintClientSideData() {
-  let formData = { 'T-Shirt-NotesId_1': '',
-  'sunglasses-QtyId_1': '2',
-  'Hoodie-QtyId_1': '2',
-  'Hoodie-CashCardId_1': 'Cash',
-  'temp-SizeId_1': '',
-  'temp-StaffId_1': false,
-  'Hoodie-NotesId_1': '',
-  'sunglasses-ColourId_1': 'red',
-  'sunglasses-CashCardId_1': 'Cash',
-  'temp-CashCardId_1': '',
-  'Beanie-QtyId_1': '2',
-  'Hoodie-ColourId_1': 'Black',
-  'sunglasses-SizeId_1': '',
-  'T-Shirt-StaffId_1': false,
-  'sellerId': 'Diogo',
-  'sunglasses-StaffId_1': false,
-  'Sunhat-SizeId_1': '-',
-  'T-Shirt-CashCardId_1': 'Cash',
-  'T-Shirt-QtyId_1': '2',
-  'Beanie-NotesId_1': '',
-  'Beanie-CashCardId_1': 'Cash',
-  'Sunhat-CashCardId_1': 'Cash',
-  'Beanie-ColourId_1': 'Grey',
-  'Sunhat-NotesId_1': '',
-  'Sunhat-StaffId_1': false,
-  'T-Shirt-SizeId_1': 'XS',
-  'temp-QtyId_1': '',
-  'Hoodie-SizeId_1': 'XS',
-  'datePickerInput': '2024-03-26',
-  'temp-ColourId_1': '',
-  'T-Shirt-ColourId_1': 'Black',
-  'temp-NotesId_1': '',
-  'Sunhat-QtyId_1': '2',
-  'sunglasses-NotesId_1': '',
-  'Hoodie-StaffId_1': false,
-  'Beanie-SizeId_1': 'XS',
-  'Beanie-StaffId_1': true,
-  'Sunhat-ColourId_1': '-' };
+function treatAndPrintClientSideData(formData) {
 
   // Get unique items list first
   let items = [];
@@ -103,6 +65,8 @@ function treatAndPrintClientSideData() {
   const dateColInSales = currentSheetAllData.map(x => x[12]).filter(n => n); // +3
   for (let i = 0; i < items.length; i++) {
     let index = 1;
+    console.log(items[i] + "_QtyId_" + index);
+    console.log(formData[items[i] + "_QtyId_" + index]);
     while (formData[items[i] + "_QtyId_" + index]) {
       if (formData[items[i] + "_QtyId_" + index] != "") {
         // add row
@@ -110,16 +74,17 @@ function treatAndPrintClientSideData() {
           formData["datePickerInput"],
           formData["sellerId"],
           items[i].replaceAll("-", " "),
-          formData[items[i] + "SizeId" + index],
-          formData[items[i] + "ColourId" + index],
-          formData[items[i] + "CashCardId" + index],
-          formData[items[i] + "QtyId" + index],
-          formData[items[i] + "StaffId" + index],
-          formData[items[i] + "NotesId" + index],
+          formData[items[i] + "_SizeId_" + index],
+          formData[items[i] + "_ColourId_" + index],
+          formData[items[i] + "_CashCardId_" + index],
+          formData[items[i] + "_QtyId_" + index],
+          formData[items[i] + "_StaffId_" + index],
+          formData[items[i] + "_NotesId_" + index],
           userAndTimestamp
-        ]
+        ];
+        salesArray.push(row);
       }
-
+      index++;
     }
   }
   if (salesArray.length > 0) {

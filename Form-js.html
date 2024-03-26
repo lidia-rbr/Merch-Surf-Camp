@@ -1,5 +1,5 @@
 <script>
-$(document).ready(function() {
+  $(document).ready(function() {
   // Initialize the datepicker
   let date = new Date();
   let year = new Intl.DateTimeFormat('en', {
@@ -135,10 +135,11 @@ function fillDropDownsAndAssignButton(extraProductMapObj, i, preID) {
  */
 function resetForm() {
   document.getElementById("salesForm").reset();
-  $("#extrateeShirtRowContainer").empty();
-  $("#extraHoodieRowContainer").empty();
-  $("#extraBeanieRowContainer").empty();
-  $("#extraSunhatRowContainer").empty();
+  let divsWithExtraRowContainer = $("div[id*='-extraRowContainer']"); 
+  // Loop through each selected container to empty them
+  divsWithExtraRowContainer.each(function() {
+    $(this).empty()
+  });
   $("#salesForm").show();
   $("#loader").hide();
 }

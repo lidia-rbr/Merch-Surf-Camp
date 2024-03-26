@@ -36,187 +36,92 @@ function displayAddSalesForm() {
   SpreadsheetApp.getUi().showModalDialog(modal, "Add sales");
 }
 
-function testObj() {
-  let mapExample = {
-    "Test new Product": {
-      "sizes": ["XS", "S"],
-      "colours": ["white", "blue"]
-    },
-    "second new product": {
-      "sizes": ["XS", "S"],
-      "colours": ["white", "blue"]
-    }
-  }
-  for (let i = 0; i < Object.keys(mapExample).length; i++) {
-    console.log(mapExample[Object.keys(mapExample)[i]]);
-    console.log(Object.keys(mapExample)[i])
-  }
-}
-
 /**
  * Treat client side data and print inputs to sheets
  * @param {object} formData
  * @return {string} res
  */
-function treatAndPrintClientSideData(formData) {
+function treatAndPrintClientSideData() {
+  let formData = { 'T-Shirt-NotesId_1': '',
+  'sunglasses-QtyId_1': '2',
+  'Hoodie-QtyId_1': '2',
+  'Hoodie-CashCardId_1': 'Cash',
+  'temp-SizeId_1': '',
+  'temp-StaffId_1': false,
+  'Hoodie-NotesId_1': '',
+  'sunglasses-ColourId_1': 'red',
+  'sunglasses-CashCardId_1': 'Cash',
+  'temp-CashCardId_1': '',
+  'Beanie-QtyId_1': '2',
+  'Hoodie-ColourId_1': 'Black',
+  'sunglasses-SizeId_1': '',
+  'T-Shirt-StaffId_1': false,
+  'sellerId': 'Diogo',
+  'sunglasses-StaffId_1': false,
+  'Sunhat-SizeId_1': '-',
+  'T-Shirt-CashCardId_1': 'Cash',
+  'T-Shirt-QtyId_1': '2',
+  'Beanie-NotesId_1': '',
+  'Beanie-CashCardId_1': 'Cash',
+  'Sunhat-CashCardId_1': 'Cash',
+  'Beanie-ColourId_1': 'Grey',
+  'Sunhat-NotesId_1': '',
+  'Sunhat-StaffId_1': false,
+  'T-Shirt-SizeId_1': 'XS',
+  'temp-QtyId_1': '',
+  'Hoodie-SizeId_1': 'XS',
+  'datePickerInput': '2024-03-26',
+  'temp-ColourId_1': '',
+  'T-Shirt-ColourId_1': 'Black',
+  'temp-NotesId_1': '',
+  'Sunhat-QtyId_1': '2',
+  'sunglasses-NotesId_1': '',
+  'Hoodie-StaffId_1': false,
+  'Beanie-SizeId_1': 'XS',
+  'Beanie-StaffId_1': true,
+  'Sunhat-ColourId_1': '-' };
 
-  console.log(formData);
-  return;
-
-
-
-
+  // Get unique items list first
+  let items = [];
+  for (let i = 0; i < Object.keys(formData).length; i++) {
+    let item = Object.keys(formData)[i].split("_")[0];
+    if (item != "datePickerInput"
+      && item != "sellerId"
+      && item != "temp"
+      && items.indexOf(item) == -1) {
+      items.push(item);
+    }
+  }
+  // Build formatted sales array
+  let salesArray = [];
+  // Prepare timestamp
   const currentSheet = SpreadsheetApp.getActiveSheet();
   const currentSheetAllData = currentSheet.getDataRange().getValues();
-  // Col 11
-  console.log("formData", formData);
-  const dateColInSales = currentSheetAllData.map(x => x[12]).filter(n => n); // +3
-  let salesArray = [];
-  // Date	Seller	Item	Size	Colour	Cash/card	Staff	Notes added by
   const userEmailAddress = Session.getEffectiveUser().getEmail();
   const timestamp = new Date();
   const userAndTimestamp = userEmailAddress + ", " + timestamp;
-  // Get first row tee shirt
-  if (formData["teeShirtQtyId"] != "") {
-    let teeShirtFirstRow = [
-      formData["datePickerInput"],
-      formData["sellerId"],
-      "T-Shirt",
-      formData["teeShirtSizeId"],
-      formData["teeShirtColourId"],
-      formData["teeShirtCashCardId"],
-      formData["teeShirtQtyId"],
-      formData["teeShirtStaffId"],
-      formData["teeShirtNotesId"],
-      userAndTimestamp
-    ];
-    salesArray.push(teeShirtFirstRow);
+  const dateColInSales = currentSheetAllData.map(x => x[12]).filter(n => n); // +3
+  for (let i = 0; i < items.length; i++) {
+    let index = 1;
+    while (formData[items[i] + "_QtyId_" + index]) {
+      if (formData[items[i] + "_QtyId_" + index] != "") {
+        // add row
+        let row = [
+          formData["datePickerInput"],
+          formData["sellerId"],
+          items[i].replaceAll("-", " "),
+          formData[items[i] + "SizeId" + index],
+          formData[items[i] + "ColourId" + index],
+          formData[items[i] + "CashCardId" + index],
+          formData[items[i] + "QtyId" + index],
+          formData[items[i] + "StaffId" + index],
+          formData[items[i] + "NotesId" + index],
+          userAndTimestamp
+        ]
+      }
+
+    }
   }
-  let teeShirtIncrement = 2;
-  let hoodieIncrement = 2;
-  let beanieIncrement = 2;
-  let sunhatIncrement = 2;
-  // Get all extra tee shirts
-  while (formData["teeShirtQtyId_" + teeShirtIncrement] && formData["teeShirtQtyId_" + teeShirtIncrement] != "") {
-    // Add the row to result array
-    let teeShirtRow = [
-      formData["datePickerInput"],
-      formData["sellerId"],
-      "T-Shirt",
-      formData["teeShirtSizeId_" + teeShirtIncrement],
-      formData["teeShirtColourId_" + teeShirtIncrement],
-      formData["teeShirtCashCardId_" + teeShirtIncrement],
-      formData["teeShirtQtyId_" + teeShirtIncrement],
-      formData["teeShirtStaffId_" + teeShirtIncrement],
-      formData["teeShirtNotesId_" + teeShirtIncrement],
-      userAndTimestamp
-    ];
-    salesArray.push(teeShirtRow);
-    teeShirtIncrement++;
-  }
-  // Get first row hoodie
-  if (formData["hoodieQtyId"] != "") {
-    let hoodieFirstRow = [
-      formData["datePickerInput"],
-      formData["sellerId"],
-      "Hoodie",
-      formData["hoodieSizeId"],
-      formData["hoodieColourId"],
-      formData["hoodieCashCardId"],
-      formData["hoodieQtyId"],
-      formData["hoodieStaffId"],
-      formData["hoodieNotesId"],
-      userAndTimestamp
-    ];
-    salesArray.push(hoodieFirstRow);
-  }
-  // Get all extra hoodies
-  while (formData["hoodieQtyId_" + hoodieIncrement] && formData["hoodieQtyId_" + hoodieIncrement] != "") {
-    // Add the row to result array
-    let hoodieRow = [
-      formData["datePickerInput"],
-      formData["sellerId"],
-      "Hoodie",
-      formData["hoodieSizeId_" + hoodieIncrement],
-      formData["hoodieColourId_" + hoodieIncrement],
-      formData["hoodieCashCardId_" + hoodieIncrement],
-      formData["hoodieQtyId_" + hoodieIncrement],
-      formData["hoodieStaffId_" + hoodieIncrement],
-      formData["hoodieNotesId_" + hoodieIncrement],
-      userAndTimestamp
-    ];
-    hoodieIncrement++;
-    salesArray.push(hoodieRow);
-  }
-  // Get first row beanie
-  if (formData["beanieQtyId"] != "") {
-    let beanieFirstRow = [
-      formData["datePickerInput"],
-      formData["sellerId"],
-      "Beanie",
-      formData["beanieSizeId"],
-      formData["beanieColourId"],
-      formData["beanieCashCardId"],
-      formData["beanieQtyId"],
-      formData["beanieStaffId"],
-      formData["beanieNotesId"],
-      userAndTimestamp
-    ];
-    salesArray.push(beanieFirstRow);
-  }
-  // Get all extra beanies
-  while (formData["beanieQtyId" + beanieIncrement] && formData["beanieQtyId" + beanieIncrement] != "") {
-    // Add the row to result array
-    let beanieRow = [
-      formData["datePickerInput"],
-      formData["sellerId"],
-      "Beanie",
-      formData["beanieSizeId_" + beanieIncrement],
-      formData["beanieColourId_" + beanieIncrement],
-      formData["beanieCashCardId_" + beanieIncrement],
-      formData["beanieQtyId_" + beanieIncrement],
-      formData["beanieStaffId_" + beanieIncrement],
-      formData["beanieNotesId_" + beanieIncrement],
-      userAndTimestamp
-    ];
-    beanieIncrement++;
-    salesArray.push(beanieRow);
-  }
-  // Get first sunhat
-  if (formData["sunhatQtyId"] != "") {
-    let sunhatFirstRow = [
-      formData["datePickerInput"],
-      formData["sellerId"],
-      "Sunhat",
-      formData["sunhatSizeId"],
-      formData["sunhatColourId"],
-      formData["sunhatCashCardId"],
-      formData["sunhatQtyId"],
-      formData["sunhatStaffId"],
-      formData["sunhatNotesId"],
-      userAndTimestamp
-    ];
-    salesArray.push(sunhatFirstRow);
-  }
-  // Get all extra sunhats
-  while (formData["sunhatQtyId" + hoodieIncrement] && formData["sunhatQtyId" + hoodieIncrement] != "") {
-    // Add the row to result array
-    let sunhatRow = [
-      formData["datePickerInput"],
-      formData["sellerId"],
-      "Sunhat",
-      formData["sunhatSizeId_" + sunhatIncrement],
-      formData["sunhatColourId_" + sunhatIncrement],
-      formData["sunhatCashCardId_" + sunhatIncrement],
-      formData["sunhatQtyId_" + sunhatIncrement],
-      formData["sunhatStaffId_" + sunhatIncrement],
-      formData["sunhatNotesId_" + sunhatIncrement],
-      userAndTimestamp
-    ];
-    sunhatIncrement++;
-    salesArray.push(sunhatRow);
-  }
-  console.log("salesArray", salesArray);
   if (salesArray.length > 0) {
     currentSheet.getRange(dateColInSales.length + 2, 13, salesArray.length, salesArray[0].length).setValues(salesArray);
     // update timestamp

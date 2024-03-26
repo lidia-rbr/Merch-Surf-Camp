@@ -49,13 +49,13 @@
       // Update IDs of cloned inputs
       let inputs = clonedRow.querySelectorAll('input');
       let selects = clonedRow.querySelectorAll('select');
-      let childrenIndex = $('#' + preID + '-extraRowContainer').children().length + 1;
+      let childrenIndex = $('#' + preID + '-extraRowContainer').children().length + 2;
       inputs.forEach(function(input, index) {
-        input.id = input.id + '_' + childrenIndex; // Append an increment
+        input.id = input.id.split("_")[0] + '_' + childrenIndex; // Append an increment
         input.value = "";
       });
       selects.forEach(function(select, index) {
-        select.id = select.id + '_' + childrenIndex; // Append an increment
+        select.id = select.id.split("_")[0] + '_' + childrenIndex; // Append an increment
       });
       document.getElementById(preID + '-extraRowContainer').appendChild(clonedRow);
     });
@@ -96,7 +96,7 @@ function fillDropDownsAndAssignButton(extraProductMapObj, i, preID) {
   // Sizes
   for (let j = 0; j < extraProductMapObj[Object.keys(extraProductMapObj)[i]]["sizes"].length; j++) {
     let val = extraProductMapObj[Object.keys(extraProductMapObj)[i]]["sizes"][j];
-    let selectId = '#' + preID + '-SizeId';
+    let selectId = '#' + preID + '-SizeId_1';
     if ($(selectId).length) {
       let option = $("<option></option>").attr("value", val).text(val);
       // Append the new option to the select element
@@ -108,7 +108,7 @@ function fillDropDownsAndAssignButton(extraProductMapObj, i, preID) {
   // Colours
   for (let j = 0; j < extraProductMapObj[Object.keys(extraProductMapObj)[i]]["colours"].length; j++) {
     let val = extraProductMapObj[Object.keys(extraProductMapObj)[i]]["colours"][j];
-    let selectId = '#' + preID + '-ColourId';
+    let selectId = '#' + preID + '-ColourId_1';
     if ($(selectId).length) {
       let option = $("<option></option>").attr("value", val).text(val);
       // Append the new option to the select element
@@ -120,7 +120,7 @@ function fillDropDownsAndAssignButton(extraProductMapObj, i, preID) {
   // Cash/Card
   for (let j = 0; j < extraProductMapObj["cashCard"].length; j++) {
     let val = extraProductMapObj["cashCard"][j];
-    let selectId = '#' + preID + '-CashCardId';
+    let selectId = '#' + preID + '-CashCardId_1';
     if ($(selectId).length) {
       let option = $("<option></option>").attr("value", val).text(val);
       // Append the new option to the select element

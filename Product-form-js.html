@@ -34,13 +34,42 @@
     fillInputs(extraProductMapObj, i, preID);
   }
   document.getElementById('salesForm').addEventListener('submit', function(event) {
-      // Get all form inputs
+      // Rebuild product map
+      let newExtraProductMap = {};
       let formData = {};
       let inputs = this.querySelectorAll('input');
       inputs.forEach(function(input) {
           formData[input.id] = input.value;
       });
-    console.log(formData);
+      console.log(formData)
+      for (let i=0; i < Object.keys(formData).length ; i++) {
+        let item = Object.keys(formData)[i].split("_")[0]
+        // Existing products
+        if (!newExtraProductMap[item] 
+        && item != "temp" 
+        && item != "sellersId" 
+        && item != "paimentTypesId"
+        && item != "NewColours"
+        && item != "NewProductName"
+        && item != "NewSizes") {
+          newExtraProductMap[item] = {};
+          newExtraProductMap[item]["sizes"] = formData[item + "_SizesId"];
+          newExtraProductMap[item]["colours"] = formData[item + "_ColoursId"];
+        }
+        // New product
+        else if (item != "temp" 
+        && item != "sellersId" 
+        && item != "paimentTypesId") {
+          let index = 2;
+          while (formData["NewProductName_" + index]) {
+            newExtraProductMap[formData["NewProductName_" + index]] = {};
+            newExtraProductMap[formData["NewProductName_" + index]]["sizes"] = formData["NewSizes_" + index];
+            newExtraProductMap[formData["NewProductName_" + index]]["colours"] = formData["NewColours_" + index];
+            index++;
+          }
+        }
+      }
+    console.log("newExtraProductMap",newExtraProductMap);
     // google.script.run.withSuccessHandler(resetForm).withFailureHandler(displayErrorMessage).treatAndPrintClientSideData(formData);
   });
   // newProductForm
@@ -50,7 +79,7 @@
     preID = $(this).closest('div').attr('id');
     clonedRow.hidden = false;
     let inputs = clonedRow.querySelectorAll('input');
-    let childrenIndex = $('#' + preID + 'newProductContainer').children().length + 2;
+    let childrenIndex = $('#newProductContainer').children().length + 2;
       inputs.forEach(function(input, index) {
         input.id = input.id.split("_")[0] + '_' + childrenIndex; // Append an increment
         input.value = "";

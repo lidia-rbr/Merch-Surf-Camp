@@ -1,0 +1,112 @@
+<script>
+  $(document).ready(function() {
+  // Add product sections
+  let extraProductMapObj = JSON.parse(extraProductMap);
+  let rowToClone = document.querySelector('#tempProductSection');
+  for (let i = 0; i < Object.keys(extraProductMapObj).length; i++) {
+    let productName = Object.keys(extraProductMapObj)[i];
+    let clonedRow = rowToClone.cloneNode(true);
+    clonedRow.hidden = false;
+    clonedRow.id = productName;
+    let divs = clonedRow.querySelectorAll('div');
+    // Update section title
+    let h = clonedRow.querySelector('h6');
+    h.innerText = productName;
+    // Update ids
+    let preID = productName.replaceAll(" ", "-");
+    let inputs = clonedRow.querySelectorAll('input');
+    let button = clonedRow.querySelector('button');
+    inputs.forEach(function(input, index) {
+      input.id = preID + input.id.replaceAll("temp", "");
+      input.value = ""
+    });
+    divs.forEach(function(div, index) {
+      div.id = preID + div.id.replaceAll("temp", "");
+    });
+    button.id = preID + button.id.replaceAll("temp", "");
+    document.getElementById('productContainer').appendChild(clonedRow);
+    // Function to delete rows
+    button.addEventListener('click', function() {
+      console.log($(this).closest('div').attr('id'))
+      $("#"+productName).remove();
+    });
+    // Fill inputs
+    fillInputs(extraProductMapObj, i, preID);
+  }
+  document.getElementById('salesForm').addEventListener('submit', function(event) {
+      // Get all form inputs
+      let formData = {};
+      let inputs = this.querySelectorAll('input');
+      inputs.forEach(function(input) {
+          formData[input.id] = input.value;
+      });
+    console.log(formData);
+    // google.script.run.withSuccessHandler(resetForm).withFailureHandler(displayErrorMessage).treatAndPrintClientSideData(formData);
+  });
+  // newProductForm
+  document.getElementById('addProductButton').addEventListener('click', function(event) {
+    let rowToClone = document.querySelector('#newProductForm');
+    let clonedRow = rowToClone.cloneNode(true);
+    preID = $(this).closest('div').attr('id');
+    clonedRow.hidden = false;
+    let inputs = clonedRow.querySelectorAll('input');
+    let childrenIndex = $('#' + preID + 'newProductContainer').children().length + 2;
+      inputs.forEach(function(input, index) {
+        input.id = input.id.split("_")[0] + '_' + childrenIndex; // Append an increment
+        input.value = "";
+      });
+    document.getElementById('newProductContainer').appendChild(clonedRow);
+  });
+    
+})
+
+/**
+ * Fill drop downs added product sections
+ * @param {obj} extraProductMapObj
+ * @param {int} i
+ * @param {preID} string
+*/
+function fillInputs(extraProductMapObj, i, preID) {
+  // Sizes
+  let selectSizesId = '#' + preID + '_SizesId';
+  $(selectSizesId).val(extraProductMapObj[preID]["sizes"]);
+
+  // Colours
+  let selectColoursId = '#' + preID + '_ColoursId';
+  $(selectColoursId).val(extraProductMapObj[preID]["colours"]);
+}
+/**
+ * When data correctly added to sheet, reset form 
+ */
+function resetForm() {
+  document.getElementById("salesForm").reset();
+  let divsWithExtraRowContainer = $("div[id*='-extraRowContainer']"); 
+  // Loop through each selected container to empty them
+  divsWithExtraRowContainer.each(function() {
+    $(this).empty()
+  });
+  $("#salesForm").show();
+  $("#loader").hide();
+}
+/**
+ * Display error message if error server side
+ */
+function displayErrorMessage(e) {
+  console.log(e)
+  $("#loader").hide();
+  $("#result").empty()
+  $("#result").show();
+  $("#result").append("<p>Oops, something wrong happened... You can call Lidia (or not), Error message:+ " + e + "</p>");
+}
+// Function to disable select elements with less than 2 options
+function disableSelectsWithFewOptions() {
+  var selects = document.querySelectorAll('select');
+  selects.forEach(function(select) {
+    if (select.options.length < 2) {
+      select.disabled = true;
+    }
+  });
+}
+// Call the function when the page is loaded
+window.addEventListener('load', disableSelectsWithFewOptions);
+</script>

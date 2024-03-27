@@ -37,6 +37,50 @@ function displayAddSalesForm() {
 }
 
 /**
+ * Display sales modal
+ */
+function displayProductForm() {
+  // Get ss data
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const settingsSheet = ss.getSheetByName("Settings");
+  const settingsData = settingsSheet.getDataRange().getValues();
+  const settingsDataHeaders = settingsData[0];
+  const items = settingsData.map(x => x[settingsDataHeaders.indexOf("Items")]).filter(n => n);
+
+  // Fill drop downs with ss data
+  // Sellers
+  let sellers = settingsData.map(x => x[settingsDataHeaders.indexOf("Sellers")]).filter(n => n);
+  let sellersTextCommaSeparated = sellers[1]
+  sellers.slice(2).forEach(function (s) {
+    sellersTextCommaSeparated += ',' + s;
+  });
+
+  // Paiment types
+  let paimentTypes = settingsData.map(x => x[settingsDataHeaders.indexOf("Paiment type")]).filter(n => n);
+  let paimentTypesSeparated = paimentTypes[1]
+  paimentTypes.slice(2).forEach(function (p) {
+    paimentTypesSeparated += ',' + p;
+  });
+
+  const extraProductMap = {};
+  // Get product info
+  for (let i = 1; i < items.length; i++) {
+    extraProductMap[items[i]] = {};
+    extraProductMap[items[i]]["colours"] = settingsData[i][settingsDataHeaders.indexOf("Colour")].split(",").filter(n => n);
+    extraProductMap[items[i]]["sizes"] = settingsData[i][settingsDataHeaders.indexOf("Size")].split(",").filter(n => n);
+  }
+  
+  let modal = HtmlService.createTemplateFromFile("Product-form");
+  modal.paimentTypesText = paimentTypesSeparated;
+  modal.sellersText = sellersTextCommaSeparated;
+  modal.extraProductMap = JSON.stringify(extraProductMap);
+
+  modal = modal.evaluate();
+  modal.setHeight(500).setWidth(850);
+  SpreadsheetApp.getUi().showModalDialog(modal, "Manage data");
+}
+
+/**
  * Treat client side data and print inputs to sheets
  * @param {object} formData
  * @return {string} res

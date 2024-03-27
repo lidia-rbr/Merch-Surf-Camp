@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
+    integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
+  </script>
+
+  <script src="https://apis.google.com/js/api.js"></script>
+  <!-- Load the Google API Loader script. -->
+  <script src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+  </script>
+  <?!=include("Product-form-js");?>
+  <?!=include("Form-css");?>
+  <script>
+    let extraProductMap = <?= extraProductMap?>;
+  </script>
+</head>
+
+<body class="modal-content">
+  <form id="salesForm" onsubmit="return(false)">
+    <!-- GENERAL -->
+    <div class="form-row">
+      <div class="form-group col-md-5">
+        <label for="date">Paiment types</label>
+        <input type="text" id="paimentTypesId" class="form-control" value=<?!=paimentTypesText;?>>
+      </div>
+      <div class="form-group col-md-5">
+        <label for="date">Sellers</label>
+        <input type="text" id="sellersId" class="form-control" value=<?!=sellersText;?>>
+        </select>
+      </div>
+    </div>
+    <hr class="hr" />
+
+
+    <!----------------->
+
+    <div>
+      <div class="form-row">
+        <div class="form-group col-md-2">
+          <label for="sizes"></label>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="sizes">Sizes</label>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="colours">Colours</label>
+        </div>
+      </div>
+      <!-- TEE SHIRT ROW TEMPLATE -->
+      <div id="tempProductSection" hidden>
+        <div class="form-row" id="temp_Info">
+          <div class="form-group col-md-2" id="temp_productNameId">
+            <h6></h6>
+          </div>
+          <div class="form-group col-md-4">
+            <input type="text" id="temp_SizesId" class="form-control">
+          </div>
+          <div class="form-group col-md-4">
+            <input type="text" id="temp_ColoursId" class="form-control">
+          </div>
+          <div class="form-group col-md-2">
+            <button type="button" id="temp_deleteProduct" class="btn btn-secondary" style="background: #bf7f7f;border-color: black;">Delete product</button>
+          </div>
+        </div>
+        <hr class="hr" />
+      </div>
+      <!-- To add extra product rows-->
+      <div id="productContainer">
+
+      </div>
+      <!-- Form to create a new product -->
+      <div id="newProductForm" hidden>
+        <div id="newProductSection_1">
+          <div class="form-row" id="temp_Info">
+            <div class="form-group col-md-2" id="temp_productNameId">
+              <input type="text" id="NewProductName_1" class="form-control" placeholder="New product name">
+            </div>
+            <div class="form-group col-md-4">
+              <input type="text" id="NewSizes_1" class="form-control" placeholder="Sizes, example: S, M, L....">
+            </div>
+            <div class="form-group col-md-4">
+              <input type="text" id="NewColours_1" class="form-control" placeholder="Colours, example: red, blue, purple">
+            </div>
+          </div>
+          <hr class="hr" />
+        </div>
+      </div>
+      <div id="newProductContainer">
+
+      </div>
+      <!----------------->
+
+      <button type="button" id="addProductButton" class="btn btn-secondary">Add product</button>
+      <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+  <div id="loader" hidden style="text-align: center;margin-top: 45px;">
+    <div class="lds-default">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div>
+      <p class="message">Adding data to sheet </p>
+    </div>
+    <div>
+      <p id='result'></p>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,5 +1,4 @@
 <script>
-
   let newExtraProductMap = {};
 
   $(document).ready(function() {
@@ -79,7 +78,31 @@
       $("#loader").prop("hidden",true);
 
       // Update confirmation message changesNoteIs
-      $("#changesNoteIs").append("coucou");
+      let message;
+      if (JSON.stringify(newExtraProductMap) == JSON.stringify(extraProductMapObj)) {
+        $('#confirmButton').attr("disabled",true);
+        message = "No modification found.";
+        $("#changesNoteIs").append(message);
+      } else {
+          message = "Deleted and new items will appear here."
+          let deletedItems = Object.keys(extraProductMapObj).filter(x => !Object.keys(newExtraProductMap).includes(x));
+          let newItems = Object.keys(newExtraProductMap).filter(x => !Object.keys(extraProductMapObj).includes(x));
+          if (deletedItems.length > 0) {
+            message = message + "<br><br><b>Deleted items:<b>"
+            for (let i=0; i<deletedItems.length;i++) {
+              message = message + "<br>"+ deletedItems[i]
+            }
+          }
+          if (newItems.length > 0) {
+            message = message + "<br><br><b>New items:<b>"
+            for (let i=0; i<newItems.length;i++) {
+              message = message + "<br>"+ newItems[i]
+            }
+          }
+          message = message + "<br><br>Please confirm these changes";
+          $("#changesNoteIs").append(message);
+        }
+
 
       $("#updateConfirmation").prop("hidden",false);
       //updateConfirmation
@@ -101,7 +124,16 @@
     document.getElementById('newProductContainer').appendChild(clonedRow);
     clonedRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
-    
+  // Go back to form
+  document.getElementById('goBackToFormButton').addEventListener('click', function(event) {
+    $("#updateConfirmation").prop("hidden",true);
+    $("#changesNoteIs").empty()
+    $("#productForm").show();
+  });
+  // Confirm changes
+  document.getElementById('confirmButton').addEventListener('click', function(event) {
+    console.log("after confirmation new extra map", newExtraProductMap)
+  });
 })
 
 /**

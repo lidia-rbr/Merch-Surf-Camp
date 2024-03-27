@@ -1,4 +1,7 @@
 <script>
+
+  let newExtraProductMap = {};
+
   $(document).ready(function() {
   // Add product sections
   let extraProductMapObj = JSON.parse(extraProductMap);
@@ -27,21 +30,25 @@
     document.getElementById('productContainer').appendChild(clonedRow);
     // Function to delete rows
     button.addEventListener('click', function() {
-      console.log($(this).closest('div').attr('id'))
+      console.log($(this).closest('div').attr('id'));
+      document.querySelector("#"+productName).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       $("#"+productName).remove();
     });
     // Fill inputs
     fillInputs(extraProductMapObj, i, preID);
   }
-  document.getElementById('salesForm').addEventListener('submit', function(event) {
+  document.getElementById('productForm').addEventListener('submit', function(event) {
+
+      $("#productForm").hide();
+      // $("#loader").prop("hidden",false);
+
       // Rebuild product map
-      let newExtraProductMap = {};
       let formData = {};
       let inputs = this.querySelectorAll('input');
       inputs.forEach(function(input) {
           formData[input.id] = input.value;
       });
-      console.log(formData)
+      console.log("formData",formData);
       for (let i=0; i < Object.keys(formData).length ; i++) {
         let item = Object.keys(formData)[i].split("_")[0]
         // Existing products
@@ -69,6 +76,13 @@
           }
         }
       }
+      $("#loader").prop("hidden",true);
+
+      // Update confirmation message changesNoteIs
+      $("#changesNoteIs").append("coucou");
+
+      $("#updateConfirmation").prop("hidden",false);
+      //updateConfirmation
     console.log("newExtraProductMap",newExtraProductMap);
     // google.script.run.withSuccessHandler(resetForm).withFailureHandler(displayErrorMessage).treatAndPrintClientSideData(formData);
   });
@@ -85,6 +99,7 @@
         input.value = "";
       });
     document.getElementById('newProductContainer').appendChild(clonedRow);
+    clonedRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
     
 })

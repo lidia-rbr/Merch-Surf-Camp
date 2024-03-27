@@ -31,12 +31,13 @@
 </head>
 
 <body class="modal-content">
-  <div class="note">
-    <p>Note: Please separate data with a comma!
-      <br>For the sizes, the script only accept the following values: XS,S,M,L,XL,XXL,- </p>
-    </div>
-  <form id="salesForm" onsubmit="return(false)">
+  <form id="productForm" onsubmit="return(false)">
     <!-- GENERAL -->
+    <div class="note">
+      <p>Note: Please separate data with a comma!
+        <br>For the sizes, the script only accept the following values: XS,S,M,L,XL,XXL,-
+      </p>
+    </div>
     <div class="form-row">
       <div class="form-group col-md-5">
         <label for="date">Paiment types</label>
@@ -50,67 +51,65 @@
     </div>
     <hr class="hr" />
 
-
-    <!----------------->
-
-    <div>
-      <div class="form-row">
+    <div class="form-row">
+      <div class="form-group col-md-2">
+        <label for="sizes"></label>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="sizes">Sizes</label>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="colours">Colours</label>
+      </div>
+    </div>
+    <div id="tempProductSection" hidden>
+      <div class="form-row" id="temp_Info">
+        <div class="form-group col-md-2" id="temp_productNameId">
+          <h6></h6>
+        </div>
+        <div class="form-group col-md-4">
+          <input type="text" id="temp_SizesId" class="form-control">
+        </div>
+        <div class="form-group col-md-4">
+          <input type="text" id="temp_ColoursId" class="form-control">
+        </div>
         <div class="form-group col-md-2">
-          <label for="sizes"></label>
-        </div>
-        <div class="form-group col-md-4">
-          <label for="sizes">Sizes</label>
-        </div>
-        <div class="form-group col-md-4">
-          <label for="colours">Colours</label>
+          <button type="button" id="temp_deleteProduct" class="btn btn-secondary" style="background: #bf7f7f;    border: white;">Delete product</button>
         </div>
       </div>
-      <!-- TEE SHIRT ROW TEMPLATE -->
-      <div id="tempProductSection" hidden>
+      <hr class="hr" />
+    </div>
+    <!-- To add extra product rows-->
+    <div id="productContainer">
+
+    </div>
+    <!-- Form to create a new product -->
+    <div id="newProductForm" hidden>
+      <div id="newProductSection_1">
         <div class="form-row" id="temp_Info">
           <div class="form-group col-md-2" id="temp_productNameId">
-            <h6></h6>
+            <input type="text" id="NewProductName_1" class="form-control" placeholder="New product name">
           </div>
           <div class="form-group col-md-4">
-            <input type="text" id="temp_SizesId" class="form-control">
+            <input type="text" id="NewSizes_1" class="form-control" placeholder="Sizes, example: S, M, L....">
           </div>
           <div class="form-group col-md-4">
-            <input type="text" id="temp_ColoursId" class="form-control">
-          </div>
-          <div class="form-group col-md-2">
-            <button type="button" id="temp_deleteProduct" class="btn btn-secondary" style="background: #bf7f7f;    border: white;">Delete product</button>
+            <input type="text" id="NewColours_1" class="form-control" placeholder="Colours, example: red, blue, purple">
           </div>
         </div>
         <hr class="hr" />
       </div>
-      <!-- To add extra product rows-->
-      <div id="productContainer">
+    </div>
+    <div id="newProductContainer">
 
+    </div>
+    <div class="form-row" id="temp_Info">
+      <div class="form-group col-md-3">
+        <button type="button" id="addProductButton" class="btn btn-secondary">Add product</button>
       </div>
-      <!-- Form to create a new product -->
-      <div id="newProductForm" hidden>
-        <div id="newProductSection_1">
-          <div class="form-row" id="temp_Info">
-            <div class="form-group col-md-2" id="temp_productNameId">
-              <input type="text" id="NewProductName_1" class="form-control" placeholder="New product name">
-            </div>
-            <div class="form-group col-md-4">
-              <input type="text" id="NewSizes_1" class="form-control" placeholder="Sizes, example: S, M, L....">
-            </div>
-            <div class="form-group col-md-4">
-              <input type="text" id="NewColours_1" class="form-control" placeholder="Colours, example: red, blue, purple">
-            </div>
-          </div>
-          <hr class="hr" />
-        </div>
-      </div>
-      <div id="newProductContainer">
-
-      </div>
-      <!----------------->
-
-      <button type="button" id="addProductButton" class="btn btn-secondary">Add product</button>
-      <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+    <hr class="hr" />
+    <button type="submit" class="btn btn-primary">Save</button>
   </form>
   <div id="loader" hidden style="text-align: center;margin-top: 45px;">
     <div class="lds-default">
@@ -132,6 +131,17 @@
     </div>
     <div>
       <p id='result'></p>
+    </div>
+  </div>
+  <div id="updateConfirmation" hidden>
+    <div class="note">
+      <p>The modifications will be applied for each month.
+      </p>
+    </div>
+    <p id="changesNoteIs"></p>
+    <div class="button-container">
+      <button type="button" id="goBackToFormButton" class="btn btn-secondary sticky-buttons">Go back to form</button>
+      <button type="button" id="confirmButton" class="btn btn-primary sticky-buttons">Confirm</button>
     </div>
   </div>
 </body>

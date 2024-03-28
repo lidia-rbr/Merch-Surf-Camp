@@ -378,11 +378,10 @@ function updateSheets(extraProductMapObj, newExtraProductMap, generalMap) {
 
     if (JSON.stringify(thisItemOldColoursTab) != JSON.stringify(thisItemNewColoursTab)) {
 
-      let newColours = thisItemNewColoursTab.filter(x => !thisItemOldColoursTab.include(x));
-      let deletedColours = thisItemOldColoursTab.filter(x => !thisItemNewColoursTab.include(x));
+      let newColours = thisItemNewColoursTab.filter(x => !thisItemOldColoursTab.includes(x));
+      let deletedColours = thisItemOldColoursTab.filter(x => !thisItemNewColoursTab.includes(x));
 
-      console.log("new colors for item: " + intersectionItems[j] + " " + newColours)
-      console.log("deleted colors for item: " + intersectionItems[j] + " " + deletedColours)
+
 
       return
 

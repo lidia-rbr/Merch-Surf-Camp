@@ -2,6 +2,7 @@
 
 let newExtraProductMap = {};
 let generalMap = {};
+let validSizes = ["XS","S","M","L","XL","XXL","-"]
 
 $(document).ready(function() {
     // Add product sections
@@ -44,7 +45,22 @@ $(document).ready(function() {
     }
     document.getElementById('productForm').addEventListener('submit', function(event) {
 
-        console.log("form submitted")
+        console.log("form submitted");
+
+        // Check if data correct for sizes
+        let validForm = true;
+        const sizeInputs = document.querySelectorAll('input[id*="_SizesId"]');
+        sizeInputs.forEach((i) => {
+          let value = i.value;
+          let valueAsArray = value.split(",").map(v => v.trim());
+          valueAsArray.forEach((s)=> {
+            if (validSizes.indexOf(s) == -1) {
+              validForm = false;
+              $("#"+i.id).addClass("is-invalid");
+            }
+          });
+        });
+if(validForm) {
 
         $("#productForm").hide();
         // $("#loader").prop("hidden",false);
@@ -55,6 +71,7 @@ $(document).ready(function() {
         inputs.forEach(function(input) {
             formData[input.id.replaceAll("SPACE", " ")] = input.value;
         });
+
         console.log("formData", formData);
         for (let i = 0; i < Object.keys(formData).length; i++) {
             let item = Object.keys(formData)[i].split("_")[0]
@@ -118,6 +135,7 @@ $(document).ready(function() {
         $("#updateConfirmation").prop("hidden", false);
         //updateConfirmation
         console.log("newExtraProductMap", newExtraProductMap);
+    }
     });
     // newProductForm
     document.getElementById('addProductButton').addEventListener('click', function(event) {

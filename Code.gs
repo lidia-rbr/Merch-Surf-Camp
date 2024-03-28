@@ -148,136 +148,136 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
-/**
- * Display product modal
- */
-function displayAddProductForm() {
-  // Get ss data
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const settingsSheet = ss.getSheetByName("Settings");
-  const settingsData = settingsSheet.getDataRange().getValues();
-  const settingsDataHeaders = settingsData[0];
-  const items = settingsData.map(x => x[settingsDataHeaders.indexOf("Items")]).filter(n => n);
+// /**
+//  * Display product modal
+//  */
+// function displayAddProductForm() {
+//   // Get ss data
+//   const ss = SpreadsheetApp.getActiveSpreadsheet();
+//   const settingsSheet = ss.getSheetByName("Settings");
+//   const settingsData = settingsSheet.getDataRange().getValues();
+//   const settingsDataHeaders = settingsData[0];
+//   const items = settingsData.map(x => x[settingsDataHeaders.indexOf("Items")]).filter(n => n);
 
-  // Fill drop downs with ss data
-  // Sellers
-  let sellers = settingsData.map(x => x[settingsDataHeaders.indexOf("Sellers")]).filter(n => n);
-  let htmlSellersOptions = "<option value=" + sellers[1] + " selected >" + sellers[1] + "</option > ";
-  sellers.slice(2).forEach(function (row) {
-    htmlSellersOptions += '<option value=' + row + '>' + row + "</option>";
-  });
-  // Hoodie colours
-  let hoodieColours = settingsData[settingsDataHeaders.indexOf("Colour")][items.indexOf("Hoodie")].split(",");
-  let htmlHoodieColoursOptions = "<option value=" + hoodieColours[0] + " selected >" + hoodieColours[0] + "</option > ";
-  hoodieColours.slice(1).forEach(function (val) {
-    htmlHoodieColoursOptions += '<option value=' + val + '>' + val + "</option>";
-  });
-  // Hoodie sizes
-  let hoodieSizes = settingsData[items.indexOf("Hoodie")][settingsDataHeaders.indexOf("Size")].split(",");
-  let htmlHoodieSizesOptions = "<option value=" + hoodieSizes[0] + " selected >" + hoodieSizes[0] + "</option > ";
-  hoodieSizes.slice(1).forEach(function (val) {
-    htmlHoodieSizesOptions += '<option value=' + val + '>' + val + "</option>";
-  });
-  // teeShirt colours
-  let teeShirtColours = settingsData[items.indexOf("T-Shirt")][settingsDataHeaders.indexOf("Colour")].split(",");
-  let htmlteeShirtColoursOptions = "<option value=" + teeShirtColours[0] + " selected >" + teeShirtColours[0] + "</option > ";
-  teeShirtColours.slice(1).forEach(function (val) {
-    htmlteeShirtColoursOptions += '<option value=' + val + '>' + val + "</option>";
-  });
-  // teeShirt sizes
-  let teeShirtSizes = settingsData[items.indexOf("T-Shirt")][settingsDataHeaders.indexOf("Size")].split(",");
-  let htmlteeShirtSizesOptions = "<option value=" + teeShirtSizes[0] + " selected >" + teeShirtSizes[0] + "</option > ";
-  teeShirtSizes.slice(1).forEach(function (val) {
-    htmlteeShirtSizesOptions += '<option value=' + val + '>' + val + "</option>";
-  });
-  // Paiment type
-  let paimentType = settingsData.map(x => x[settingsDataHeaders.indexOf("Paiment type")]).filter(n => n);
-  let htmlPaimentTypeOptions = "<option value=" + paimentType[1] + " selected >" + paimentType[1] + "</option > ";
-  paimentType.slice(2).forEach(function (row) {
-    htmlPaimentTypeOptions += '<option value=' + row + '>' + row + "</option>";
-  });
-  // Beanie size
-  let beanieSizes = settingsData[items.indexOf("Beanie")][settingsDataHeaders.indexOf("Size")].split(",");
-  let htmlBeanieSizesOptions = "<option value=" + beanieSizes[0] + " selected >" + beanieSizes[0] + "</option > ";
-  beanieSizes.slice(1).forEach(function (val) {
-    htmlBeanieSizesOptions += '<option value=' + val + '>' + val + "</option>";
-  });
-  // beanie colours
-  let beanieColours = settingsData[items.indexOf("Beanie")][settingsDataHeaders.indexOf("Colour")].split(",");
-  let htmlBeanieColoursOptions = "<option value=" + beanieColours[0] + " selected >" + beanieColours[0] + "</option > ";
-  beanieColours.slice(1).forEach(function (val) {
-    htmlBeanieColoursOptions += '<option value=' + val + '>' + val + "</option>";
-  });
-  // Sunhat size
-  let sunhatSizes = settingsData[items.indexOf("Sunhat")][settingsDataHeaders.indexOf("Size")].split(",");
-  let htmlsunhatSizesOptions = "<option value=" + sunhatSizes[0] + " selected >" + sunhatSizes[0] + "</option > ";
-  sunhatSizes.slice(1).forEach(function (val) {
-    htmlsunhatSizesOptions += '<option value=' + val + '>' + val + "</option>";
-  });
-  // Sunhat colours
-  let sunhatColours = settingsData[items.indexOf("Sunhat")][settingsDataHeaders.indexOf("Colour")].split(",");
-  let htmlSunhatColoursOptions = "<option value=" + sunhatColours[0] + " selected >" + sunhatColours[0] + "</option > ";
-  sunhatColours.slice(1).forEach(function (val) {
-    htmlSunhatColoursOptions += '<option value=' + val + '>' + val + "</option>";
-  });
+//   // Fill drop downs with ss data
+//   // Sellers
+//   let sellers = settingsData.map(x => x[settingsDataHeaders.indexOf("Sellers")]).filter(n => n);
+//   let htmlSellersOptions = "<option value=" + sellers[1] + " selected >" + sellers[1] + "</option > ";
+//   sellers.slice(2).forEach(function (row) {
+//     htmlSellersOptions += '<option value=' + row + '>' + row + "</option>";
+//   });
+//   // Hoodie colours
+//   let hoodieColours = settingsData[settingsDataHeaders.indexOf("Colour")][items.indexOf("Hoodie")].split(",");
+//   let htmlHoodieColoursOptions = "<option value=" + hoodieColours[0] + " selected >" + hoodieColours[0] + "</option > ";
+//   hoodieColours.slice(1).forEach(function (val) {
+//     htmlHoodieColoursOptions += '<option value=' + val + '>' + val + "</option>";
+//   });
+//   // Hoodie sizes
+//   let hoodieSizes = settingsData[items.indexOf("Hoodie")][settingsDataHeaders.indexOf("Size")].split(",");
+//   let htmlHoodieSizesOptions = "<option value=" + hoodieSizes[0] + " selected >" + hoodieSizes[0] + "</option > ";
+//   hoodieSizes.slice(1).forEach(function (val) {
+//     htmlHoodieSizesOptions += '<option value=' + val + '>' + val + "</option>";
+//   });
+//   // teeShirt colours
+//   let teeShirtColours = settingsData[items.indexOf("T-Shirt")][settingsDataHeaders.indexOf("Colour")].split(",");
+//   let htmlteeShirtColoursOptions = "<option value=" + teeShirtColours[0] + " selected >" + teeShirtColours[0] + "</option > ";
+//   teeShirtColours.slice(1).forEach(function (val) {
+//     htmlteeShirtColoursOptions += '<option value=' + val + '>' + val + "</option>";
+//   });
+//   // teeShirt sizes
+//   let teeShirtSizes = settingsData[items.indexOf("T-Shirt")][settingsDataHeaders.indexOf("Size")].split(",");
+//   let htmlteeShirtSizesOptions = "<option value=" + teeShirtSizes[0] + " selected >" + teeShirtSizes[0] + "</option > ";
+//   teeShirtSizes.slice(1).forEach(function (val) {
+//     htmlteeShirtSizesOptions += '<option value=' + val + '>' + val + "</option>";
+//   });
+//   // Paiment type
+//   let paimentType = settingsData.map(x => x[settingsDataHeaders.indexOf("Paiment type")]).filter(n => n);
+//   let htmlPaimentTypeOptions = "<option value=" + paimentType[1] + " selected >" + paimentType[1] + "</option > ";
+//   paimentType.slice(2).forEach(function (row) {
+//     htmlPaimentTypeOptions += '<option value=' + row + '>' + row + "</option>";
+//   });
+//   // Beanie size
+//   let beanieSizes = settingsData[items.indexOf("Beanie")][settingsDataHeaders.indexOf("Size")].split(",");
+//   let htmlBeanieSizesOptions = "<option value=" + beanieSizes[0] + " selected >" + beanieSizes[0] + "</option > ";
+//   beanieSizes.slice(1).forEach(function (val) {
+//     htmlBeanieSizesOptions += '<option value=' + val + '>' + val + "</option>";
+//   });
+//   // beanie colours
+//   let beanieColours = settingsData[items.indexOf("Beanie")][settingsDataHeaders.indexOf("Colour")].split(",");
+//   let htmlBeanieColoursOptions = "<option value=" + beanieColours[0] + " selected >" + beanieColours[0] + "</option > ";
+//   beanieColours.slice(1).forEach(function (val) {
+//     htmlBeanieColoursOptions += '<option value=' + val + '>' + val + "</option>";
+//   });
+//   // Sunhat size
+//   let sunhatSizes = settingsData[items.indexOf("Sunhat")][settingsDataHeaders.indexOf("Size")].split(",");
+//   let htmlsunhatSizesOptions = "<option value=" + sunhatSizes[0] + " selected >" + sunhatSizes[0] + "</option > ";
+//   sunhatSizes.slice(1).forEach(function (val) {
+//     htmlsunhatSizesOptions += '<option value=' + val + '>' + val + "</option>";
+//   });
+//   // Sunhat colours
+//   let sunhatColours = settingsData[items.indexOf("Sunhat")][settingsDataHeaders.indexOf("Colour")].split(",");
+//   let htmlSunhatColoursOptions = "<option value=" + sunhatColours[0] + " selected >" + sunhatColours[0] + "</option > ";
+//   sunhatColours.slice(1).forEach(function (val) {
+//     htmlSunhatColoursOptions += '<option value=' + val + '>' + val + "</option>";
+//   });
 
-  let mapExample = {
-    "productName": "Test new Product",
-    "sizes": ["XS", "S"],
-    "colours": ["white", "blue"]
-  }
+//   let mapExample = {
+//     "productName": "Test new Product",
+//     "sizes": ["XS", "S"],
+//     "colours": ["white", "blue"]
+//   }
 
-  let modal = HtmlService.createTemplateFromFile("Form");
-  modal.sellersOptions = htmlSellersOptions;
-  modal.hoodieColourOptions = htmlHoodieColoursOptions;
-  modal.hoodieSizesOptions = htmlHoodieSizesOptions;
-  modal.teeShirtColourOptions = htmlteeShirtColoursOptions;
-  modal.teeShirtSizesOptions = htmlteeShirtSizesOptions;
-  modal.beanieSizesOptions = htmlBeanieSizesOptions;
-  modal.beanieColourOptions = htmlBeanieColoursOptions;
-  modal.sunhatSizesOptions = htmlsunhatSizesOptions;
-  modal.sunhatColourOptions = htmlSunhatColoursOptions
-  modal.paimentTypeOptions = htmlPaimentTypeOptions;
-  modal.extraProductMap = mapExample
+//   let modal = HtmlService.createTemplateFromFile("Form");
+//   modal.sellersOptions = htmlSellersOptions;
+//   modal.hoodieColourOptions = htmlHoodieColoursOptions;
+//   modal.hoodieSizesOptions = htmlHoodieSizesOptions;
+//   modal.teeShirtColourOptions = htmlteeShirtColoursOptions;
+//   modal.teeShirtSizesOptions = htmlteeShirtSizesOptions;
+//   modal.beanieSizesOptions = htmlBeanieSizesOptions;
+//   modal.beanieColourOptions = htmlBeanieColoursOptions;
+//   modal.sunhatSizesOptions = htmlsunhatSizesOptions;
+//   modal.sunhatColourOptions = htmlSunhatColoursOptions
+//   modal.paimentTypeOptions = htmlPaimentTypeOptions;
+//   modal.extraProductMap = mapExample
 
-  modal = modal.evaluate();
-  modal.setHeight(500).setWidth(850);
-  SpreadsheetApp.getUi().showModalDialog(modal, "Add sales");
-}
-
-
-// function updateSheets(extraProductMapObj, newExtraProductMap,generalMap) {
-//   console.log("extraProductMapObj", extraProductMapObj)
-//   console.log("newExtraProductMap", newExtraProductMap)
+//   modal = modal.evaluate();
+//   modal.setHeight(500).setWidth(850);
+//   SpreadsheetApp.getUi().showModalDialog(modal, "Add sales");
 // }
 
-function updateSheets() {
-  let extraProductMapObj = {
-    'T-Shirt':
-    {
-      'colours': ['Black', ' White', ' Grey'],
-      'sizes': ['XS', ' S', ' M', ' L', ' XL', ' XXL']
-    },
-    'Beanie': { sizes: ['XS'], colours: ['Grey'] },
-    'Sunhat': { colours: ['-'], sizes: ['-'] },
-    'Hoodie':
-    {
-      'sizes': ['XS', ' S', ' M', ' L', ' XL', ' XXL'],
-      'colours': ['Black']
-    }
-  }
+/**
+ * Update every month sheet with new values, and update settings data
+ * @param {object} extraProductMapObj
+ * @param {object} newExtraProductMap
+ * @param {object} generalMap
+ */
+function updateSheets(extraProductMapObj, newExtraProductMap,generalMap) {
+  // let extraProductMapObj = {
+  //   'T-Shirt':
+  //   {
+  //     'colours': ['Black', ' White', ' Grey'],
+  //     'sizes': ['XS', ' S', ' M', ' L', ' XL', ' XXL']
+  //   },
+  //   'Beanie': { sizes: ['XS'], colours: ['Grey'] },
+  //   'Sunhat': { colours: ['-'], sizes: ['-'] },
+  //   'Hoodie':
+  //   {
+  //     'sizes': ['XS', ' S', ' M', ' L', ' XL', ' XXL'],
+  //     'colours': ['Black']
+  //   }
+  // }
 
-  let generalMap = {
-    "sellers": "Diogo,Danny,Margo,Lidia",
-    "paimentTypes": "free,cahs,card"
-  };
+  // let generalMap = {
+  //   "sellers": "Diogo,Danny,Margo,Lidia",
+  //   "paimentTypes": "free,cahs,card"
+  // };
 
-  let newExtraProductMap = {
-    'New product': { 'colours': 'Black,White', 'sizes': 'S,M' },
-    'T-Shirt': { 'sizes': 'XS, S, M, L, XL, XXL', 'colours': 'Black, White, Grey' },
-    'Beanie': { 'colours': 'Grey', 'sizes': 'XS' },
-    'Hoodie': { 'sizes': 'XS, S, M, L, XL, XXL', 'colours': 'Black' }
-  }
+  // let newExtraProductMap = {
+  //   'New product': { 'colours': 'Black,White', 'sizes': 'S,M' },
+  //   'T-Shirt': { 'sizes': 'XS, S, M, L, XL, XXL', 'colours': 'Black, White, Grey' },
+  //   'Beanie': { 'colours': 'Grey', 'sizes': 'XS' },
+  //   'Hoodie': { 'sizes': 'XS, S, M, L, XL, XXL', 'colours': 'Black' }
+  // }
   let oldItems = Object.keys(extraProductMapObj);
   let newItems = Object.keys(newExtraProductMap);
   let intersectionItems = oldItems.filter(x => newItems.includes(x));
@@ -319,6 +319,7 @@ function updateSheets() {
       let rangeToDelete = thisSheet.getRange(j + 1, 2, 1, NUMBER_OF_COL_TODELETE);
       rangeToDelete.deleteCells(SpreadsheetApp.Dimension.ROWS);
       thisSheetItemCol.splice(j, 1);
+      thisSheetColourCol.splice(j, 1);
     }
   }
 
@@ -328,12 +329,13 @@ function updateSheets() {
     // for (let k = 0; k < newProductColoursArray.length; k++) {
     for (let k = 0; k < 2; k++) {
       // Inventory
-      let sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)")  - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
+      let sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
       let destination = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 4, 2, NUMBER_OF_COL_TODELETE - 2);
       let cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)"), 2, 1, NUMBER_OF_COL_TODELETE);
       cellsToAdd.insertCells(SpreadsheetApp.Dimension.ROWS);
       thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)"), 2, 1, 2).setValues([[onlyNewItems[j], newProductColoursArray[k]]]);
       thisSheetItemCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, onlyNewItems[j]);
+      thisSheetColourCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, newProductColoursArray[k]);
       sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
 
       // Current stock
@@ -343,6 +345,7 @@ function updateSheets() {
       cellsToAdd.insertCells(SpreadsheetApp.Dimension.ROWS);
       thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)"), 2, 1, 2).setValues([[onlyNewItems[j], newProductColoursArray[k]]]);
       thisSheetItemCol.splice(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") - 1, 0, onlyNewItems[j]);
+      thisSheetColourCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, newProductColoursArray[k]);
       sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
 
       // Total sold 
@@ -352,22 +355,70 @@ function updateSheets() {
       cellsToAdd.insertCells(SpreadsheetApp.Dimension.ROWS);
       thisSheet.getRange(thisSheetItemCol.indexOf("$End$"), 2, 1, 2).setValues([[onlyNewItems[j], newProductColoursArray[k]]]);
       thisSheetItemCol.splice(thisSheetItemCol.indexOf("$End$") - 1, 0, onlyNewItems[j]);
+      thisSheetColourCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, newProductColoursArray[k]);
       sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
     }
   }
-  // // Check if new colours in intersection products
-  // for (let j = 0; j < intersectionItems.length; j++) {
-  //   let thisItemOldColoursTab = extraProductMapObj[intersectionItems[j]]["colours"].map(c => c.trim());
-  //   let thisItemNewColoursTab = newExtraProductMap[intersectionItems[j]]["colours"].split(",").map(c => c.trim());
-  //   if (JSON.stringify(thisItemOldColoursTab) != JSON.stringify(thisItemNewColoursTab)) {
-  //     let newColours = thisItemNewColoursTab.filter(x => !thisItemOldColoursTab.include(x));
-  //     let deletedColours = thisItemOldColoursTab.filter(x => !thisItemNewColoursTab.include(x));
-  //     // Add new colours
-  //     for (let k = 0; k < newColours.length; k++) {
+  // Check if new or deleted colours in intersection products
+  for (let j = 0; j < intersectionItems.length; j++) {
+    let thisItemOldColoursTab = extraProductMapObj[intersectionItems[j]]["colours"].map(c => c.trim());
+    let thisItemNewColoursTab = newExtraProductMap[intersectionItems[j]]["colours"].split(",").map(c => c.trim());
+    if (JSON.stringify(thisItemOldColoursTab) != JSON.stringify(thisItemNewColoursTab)) {
+      
+      let newColours = thisItemNewColoursTab.filter(x => !thisItemOldColoursTab.include(x));
+      let deletedColours = thisItemOldColoursTab.filter(x => !thisItemNewColoursTab.include(x));
 
-  //     }
-  //   }
-  // }
+      console.log("new colors for item: " + intersectionItems[j] + " " + newColours)
+      console.log("deleted colors for item: " + intersectionItems[j] + " " + deletedColours)
+
+      return
+
+      // Add new colours
+      if (newColours.length > 0) {
+        for (let k = 0; k < newColours.length; k++) {
+          // Inventory
+          let sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
+          let destination = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 4, 2, NUMBER_OF_COL_TODELETE - 2);
+          let cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)"), 2, 1, NUMBER_OF_COL_TODELETE);
+          cellsToAdd.insertCells(SpreadsheetApp.Dimension.ROWS);
+          thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)"), 2, 1, 2).setValues([[intersectionItems[j], newColours[k]]]);
+          thisSheetItemCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, onlyNewItems[j]);
+          thisSheetColourCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, newProductColoursArray[k]);
+          sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+
+          // Current stock
+          sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
+          destination = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") - 1, 4, 2, NUMBER_OF_COL_TODELETE - 2);
+          cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)"), 2, 1, NUMBER_OF_COL_TODELETE);
+          cellsToAdd.insertCells(SpreadsheetApp.Dimension.ROWS);
+          thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)"), 2, 1, 2).setValues([[intersectionItems[j], newColours[k]]]);
+          thisSheetItemCol.splice(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") - 1, 0, onlyNewItems[j]);
+          thisSheetColourCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, newProductColoursArray[k]);
+          sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+
+          // Total sold 
+          sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("$End$") - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
+          destination = thisSheet.getRange(thisSheetItemCol.indexOf("$End$") - 1, 4, 2, NUMBER_OF_COL_TODELETE - 2);
+          cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("$End$"), 2, 1, NUMBER_OF_COL_TODELETE);
+          cellsToAdd.insertCells(SpreadsheetApp.Dimension.ROWS);
+          thisSheet.getRange(thisSheetItemCol.indexOf("$End$"), 2, 1, 2).setValues([[intersectionItems[j], newColours[k]]]);
+          thisSheetItemCol.splice(thisSheetItemCol.indexOf("$End$") - 1, 0, onlyNewItems[j]);
+          thisSheetColourCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, newProductColoursArray[k]);
+          sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+        }
+      } else if (deletedColours.length > 0) {
+        // Delete items if necessary
+        for (let k = thisSheetItemCol.length; k > 7; k--) {
+          if (deletedColours.indexOf(thisSheetColourCol[k]) > -1 && thisSheetItemCol[k] == intersectionItems[j]) {
+            let rangeToDelete = thisSheet.getRange(k + 1, 2, 1, NUMBER_OF_COL_TODELETE);
+            rangeToDelete.deleteCells(SpreadsheetApp.Dimension.ROWS);
+            thisSheetItemCol.splice(k, 1);
+            thisSheetColourCol.thisSheetItemCol.splice(k, 1);
+          }
+        }
+      }
+    }
+  }
 
 
   // }

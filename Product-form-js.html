@@ -16,7 +16,7 @@
     let h = clonedRow.querySelector('h6');
     h.innerText = productName;
     // Update ids
-    let preID = productName.replaceAll(" ", "-");
+    let preID = productName.replaceAll(" ", "SPACE");
     let inputs = clonedRow.querySelectorAll('input');
     let button = clonedRow.querySelector('button');
     inputs.forEach(function(input, index) {
@@ -38,6 +38,8 @@
     fillInputs(extraProductMapObj, i, preID);
   }
   document.getElementById('productForm').addEventListener('submit', function(event) {
+
+    console.log("form submitted")
 
       $("#productForm").hide();
       // $("#loader").prop("hidden",false);
@@ -111,7 +113,6 @@
       $("#updateConfirmation").prop("hidden",false);
       //updateConfirmation
       console.log("newExtraProductMap",newExtraProductMap);
-    google.script.run.withSuccessHandler(closeModal).withFailureHandler(displayErrorMessage).updateSheets(extraProductMapObj, newExtraProductMap,generalMap);
   });
   // newProductForm
   document.getElementById('addProductButton').addEventListener('click', function(event) {
@@ -136,7 +137,8 @@
   });
   // Confirm changes
   document.getElementById('confirmButton').addEventListener('click', function(event) {
-    console.log("after confirmation new extra map", newExtraProductMap)
+    console.log("after confirmation new extra map", newExtraProductMap);
+    google.script.run.withSuccessHandler(closeModal).withFailureHandler(displayErrorMessage).updateSheets(extraProductMapObj, newExtraProductMap,generalMap);
   });
 })
 
@@ -151,13 +153,16 @@ function closeModal() {
  * @param {preID} string
 */
 function fillInputs(extraProductMapObj, i, preID) {
+  console.log(preID);
+  console.log(extraProductMap)
+  console.log(extraProductMapObj[preID.replaceAll("SPACE", " ")]["sizes"])
   // Sizes
   let selectSizesId = '#' + preID + '_SizesId';
-  $(selectSizesId).val(extraProductMapObj[preID]["sizes"]);
+  $(selectSizesId).val(extraProductMapObj[preID.replaceAll("SPACE", " ")]["sizes"]);
 
   // Colours
   let selectColoursId = '#' + preID + '_ColoursId';
-  $(selectColoursId).val(extraProductMapObj[preID]["colours"]);
+  $(selectColoursId).val(extraProductMapObj[preID.replaceAll("SPACE", " ")]["colours"]);
 }
 /**
  * When data correctly added to sheet, reset form 

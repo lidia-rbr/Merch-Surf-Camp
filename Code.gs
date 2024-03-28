@@ -69,7 +69,7 @@ function displayProductForm() {
     extraProductMap[items[i]]["colours"] = settingsData[i][settingsDataHeaders.indexOf("Colour")].split(",").filter(n => n);
     extraProductMap[items[i]]["sizes"] = settingsData[i][settingsDataHeaders.indexOf("Size")].split(",").filter(n => n);
   }
-  
+
   let modal = HtmlService.createTemplateFromFile("Product-form");
   modal.paimentTypesText = paimentTypesSeparated;
   modal.sellersText = sellersTextCommaSeparated;
@@ -244,3 +244,140 @@ function displayAddProductForm() {
   modal.setHeight(500).setWidth(850);
   SpreadsheetApp.getUi().showModalDialog(modal, "Add sales");
 }
+
+
+// function updateSheets(extraProductMapObj, newExtraProductMap,generalMap) {
+//   console.log("extraProductMapObj", extraProductMapObj)
+//   console.log("newExtraProductMap", newExtraProductMap)
+// }
+
+function updateSheets() {
+  let extraProductMapObj = {
+    'T-Shirt':
+    {
+      'colours': ['Black', ' White', ' Grey'],
+      'sizes': ['XS', ' S', ' M', ' L', ' XL', ' XXL']
+    },
+    'Beanie': { sizes: ['XS'], colours: ['Grey'] },
+    'Sunhat': { colours: ['-'], sizes: ['-'] },
+    'Hoodie':
+    {
+      'sizes': ['XS', ' S', ' M', ' L', ' XL', ' XXL'],
+      'colours': ['Black']
+    }
+  }
+
+  let generalMap = {
+    "sellers": "Diogo,Danny,Margo,Lidia",
+    "paimentTypes": "free,cahs,card"
+  };
+
+  let newExtraProductMap = {
+    'New product': { 'colours': 'Black,White', 'sizes': 'S,M' },
+    'T-Shirt': { 'sizes': 'XS, S, M, L, XL, XXL', 'colours': 'Black, White, Grey' },
+    'Beanie': { 'colours': 'Grey', 'sizes': 'XS' },
+    'Hoodie': { 'sizes': 'XS, S, M, L, XL, XXL', 'colours': 'Black' }
+  }
+  let oldItems = Object.keys(extraProductMapObj);
+  let newItems = Object.keys(newExtraProductMap);
+  let intersectionItems = oldItems.filter(x => newItems.includes(x));
+  let deletedItems = oldItems.filter(x => !newItems.includes(x));
+  let onlyNewItems = newItems.filter(x => !oldItems.includes(x));
+
+  // Update settings sheet
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const settingsSheet = ss.getSheetByName("Settings");
+  const settingsData = settingsSheet.getDataRange().getValues();
+  const settingsDataHeaders = settingsData[0];
+  const formattedSellersList = generalMap.sellers.split(",").map(x => [x]);
+  const formattedPaimentTypesList = generalMap.paimentTypes.split(",").map(x => [x]);
+  settingsSheet.getRange(2, settingsDataHeaders.indexOf("Paiment type") + 1, formattedPaimentTypesList.length, 1).setValues(formattedPaimentTypesList);
+  settingsSheet.getRange(2, settingsDataHeaders.indexOf("Sellers") + 1, formattedSellersList.length, 1).setValues(formattedSellersList);
+  // Build item array
+  let formattedItemsArray = [];
+  for (let i = 0; i < newItems.length; i++) {
+    let row = [
+      newItems[i],
+      newExtraProductMap[newItems[i]]["colours"],
+      newExtraProductMap[newItems[i]]["sizes"]
+    ];
+    formattedItemsArray.push(row);
+  }
+  settingsSheet.getRange(2, 1, formattedItemsArray.length, formattedItemsArray[0].length).setValues(formattedItemsArray);
+
+  // Update month sheets
+  // for (let i = 0; i < MONTHS_ARRAY.length; i++) {
+  // let thisSheet = ss.getSheetByName(MONTHS_ARRAY[i]);
+  let thisSheet = ss.getSheetByName("Copy of Template");
+  let thisSheetData = thisSheet.getDataRange().getValues();
+  let thisSheetItemCol = thisSheetData.map(x => x[ITEM_COL]);
+  let thisSheetColourCol = thisSheetData.map(x => x[COLOURS_COL]);
+
+  // Delete items if necessary
+  for (let j = thisSheetItemCol.length; j > 7; j--) {
+    if (deletedItems.indexOf(thisSheetItemCol[j]) > -1) {
+      let rangeToDelete = thisSheet.getRange(j + 1, 2, 1, NUMBER_OF_COL_TODELETE);
+      rangeToDelete.deleteCells(SpreadsheetApp.Dimension.ROWS);
+      thisSheetItemCol.splice(j, 1);
+    }
+  }
+
+  // Add item if necessary
+  // for (let j = 0; j < onlyNewItems.length; j++) {
+  for (let j = 0; j < 1; j++) {
+    let newProductColoursArray = newExtraProductMap[onlyNewItems[j]]["colours"].split(",");
+    // for (let k = 0; k < newProductColoursArray.length; k++) {
+    for (let k = 0; k < 2; k++) {
+      // Inventory
+      let sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") + k - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
+      let destination = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") + k -1, 4, 2, NUMBER_OF_COL_TODELETE - 2);
+      let cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") + k, 2, 1, NUMBER_OF_COL_TODELETE);
+      cellsToAdd.insertCells(SpreadsheetApp.Dimension.ROWS);
+      thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") + k, 2, 1, 2).setValues([[onlyNewItems[j], newProductColoursArray[k]]]);
+      sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+
+      // Current stock
+      sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") + k, 4, 1, NUMBER_OF_COL_TODELETE - 2);
+      destination = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") + k, 4, 2, NUMBER_OF_COL_TODELETE - 2);
+      cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") + k + 1, 2, 1, NUMBER_OF_COL_TODELETE);
+      cellsToAdd.insertCells(SpreadsheetApp.Dimension.ROWS);
+      thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") + k + 1, 2, 1, 2).setValues([[onlyNewItems[j], newProductColoursArray[k]]]);
+      sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+
+      // Total sold 
+      sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("$End$") + k + 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
+      destination = thisSheet.getRange(thisSheetItemCol.indexOf("$End$") + k + 1, 4, 2, NUMBER_OF_COL_TODELETE - 2);
+      cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("$End$") + k + 2, 2, 1, NUMBER_OF_COL_TODELETE);
+      cellsToAdd.insertCells(SpreadsheetApp.Dimension.ROWS);
+      console.log(thisSheetItemCol.indexOf("$End$") + k + 2)
+      thisSheet.getRange(thisSheetItemCol.indexOf("$End$") + k + 2, 2, 1, 2).setValues([[onlyNewItems[j], newProductColoursArray[k]]]);
+      sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+    }
+  }
+
+
+  // }
+
+
+}
+// const INVENTORY_CELL = "B7";
+// const NUMBER_OF_COL_TODELETE = 10;
+// const ITEM_COL = 2;
+// const COLOURS_COL = 3;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

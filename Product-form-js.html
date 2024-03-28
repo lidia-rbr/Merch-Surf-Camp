@@ -1,5 +1,6 @@
 <script>
   let newExtraProductMap = {};
+  let generalMap = {};
 
   $(document).ready(function() {
   // Add product sections
@@ -73,6 +74,11 @@
             newExtraProductMap[formData["NewProductName_" + index]]["colours"] = formData["NewColours_" + index];
             index++;
           }
+        } 
+        // Get general
+        else if (item != "temp" ) {
+          generalMap["sellers"] = formData["sellersId"];
+          generalMap["paimentTypes"] = formData["paimentTypesId"];
         }
       }
       $("#loader").prop("hidden",true);
@@ -88,26 +94,24 @@
           let deletedItems = Object.keys(extraProductMapObj).filter(x => !Object.keys(newExtraProductMap).includes(x));
           let newItems = Object.keys(newExtraProductMap).filter(x => !Object.keys(extraProductMapObj).includes(x));
           if (deletedItems.length > 0) {
-            message = message + "<br><br><b>Deleted items:<b>"
+            message = message + "<br><br><b>Deleted items:</b>"
             for (let i=0; i<deletedItems.length;i++) {
               message = message + "<br>"+ deletedItems[i]
             }
           }
           if (newItems.length > 0) {
-            message = message + "<br><br><b>New items:<b>"
+            message = message + "<br><br><b>New items:</b>"
             for (let i=0; i<newItems.length;i++) {
               message = message + "<br>"+ newItems[i]
             }
           }
-          message = message + "<br><br>Please confirm these changes";
+          // message = message + "<br><br>Please confirm these changes";
           $("#changesNoteIs").append(message);
         }
-
-
       $("#updateConfirmation").prop("hidden",false);
       //updateConfirmation
-    console.log("newExtraProductMap",newExtraProductMap);
-    // google.script.run.withSuccessHandler(resetForm).withFailureHandler(displayErrorMessage).treatAndPrintClientSideData(formData);
+      console.log("newExtraProductMap",newExtraProductMap);
+    google.script.run.withSuccessHandler(closeModal).withFailureHandler(displayErrorMessage).updateSheets(extraProductMapObj, newExtraProductMap,generalMap);
   });
   // newProductForm
   document.getElementById('addProductButton').addEventListener('click', function(event) {
@@ -135,6 +139,10 @@
     console.log("after confirmation new extra map", newExtraProductMap)
   });
 })
+
+function closeModal() {
+    google.script.host.close();
+}
 
 /**
  * Fill drop downs added product sections

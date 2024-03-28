@@ -48,7 +48,7 @@
       let formData = {};
       let inputs = this.querySelectorAll('input');
       inputs.forEach(function(input) {
-          formData[input.id] = input.value;
+          formData[input.id.replaceAll("SPACE"," ")] = input.value;
       });
       console.log("formData",formData);
       for (let i=0; i < Object.keys(formData).length ; i++) {

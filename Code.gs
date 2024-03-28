@@ -323,37 +323,51 @@ function updateSheets() {
   }
 
   // Add item if necessary
-  // for (let j = 0; j < onlyNewItems.length; j++) {
-  for (let j = 0; j < 1; j++) {
+  for (let j = 0; j < onlyNewItems.length; j++) {
     let newProductColoursArray = newExtraProductMap[onlyNewItems[j]]["colours"].split(",");
     // for (let k = 0; k < newProductColoursArray.length; k++) {
     for (let k = 0; k < 2; k++) {
       // Inventory
-      let sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") + k - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
-      let destination = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") + k -1, 4, 2, NUMBER_OF_COL_TODELETE - 2);
-      let cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") + k, 2, 1, NUMBER_OF_COL_TODELETE);
+      let sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)")  - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
+      let destination = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 4, 2, NUMBER_OF_COL_TODELETE - 2);
+      let cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)"), 2, 1, NUMBER_OF_COL_TODELETE);
       cellsToAdd.insertCells(SpreadsheetApp.Dimension.ROWS);
-      thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") + k, 2, 1, 2).setValues([[onlyNewItems[j], newProductColoursArray[k]]]);
+      thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)"), 2, 1, 2).setValues([[onlyNewItems[j], newProductColoursArray[k]]]);
+      thisSheetItemCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, onlyNewItems[j]);
       sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
 
       // Current stock
-      sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") + k, 4, 1, NUMBER_OF_COL_TODELETE - 2);
-      destination = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") + k, 4, 2, NUMBER_OF_COL_TODELETE - 2);
-      cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") + k + 1, 2, 1, NUMBER_OF_COL_TODELETE);
+      sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
+      destination = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") - 1, 4, 2, NUMBER_OF_COL_TODELETE - 2);
+      cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)"), 2, 1, NUMBER_OF_COL_TODELETE);
       cellsToAdd.insertCells(SpreadsheetApp.Dimension.ROWS);
-      thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") + k + 1, 2, 1, 2).setValues([[onlyNewItems[j], newProductColoursArray[k]]]);
+      thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)"), 2, 1, 2).setValues([[onlyNewItems[j], newProductColoursArray[k]]]);
+      thisSheetItemCol.splice(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") - 1, 0, onlyNewItems[j]);
       sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
 
       // Total sold 
-      sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("$End$") + k + 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
-      destination = thisSheet.getRange(thisSheetItemCol.indexOf("$End$") + k + 1, 4, 2, NUMBER_OF_COL_TODELETE - 2);
-      cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("$End$") + k + 2, 2, 1, NUMBER_OF_COL_TODELETE);
+      sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("$End$") - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
+      destination = thisSheet.getRange(thisSheetItemCol.indexOf("$End$") - 1, 4, 2, NUMBER_OF_COL_TODELETE - 2);
+      cellsToAdd = thisSheet.getRange(thisSheetItemCol.indexOf("$End$"), 2, 1, NUMBER_OF_COL_TODELETE);
       cellsToAdd.insertCells(SpreadsheetApp.Dimension.ROWS);
-      console.log(thisSheetItemCol.indexOf("$End$") + k + 2)
-      thisSheet.getRange(thisSheetItemCol.indexOf("$End$") + k + 2, 2, 1, 2).setValues([[onlyNewItems[j], newProductColoursArray[k]]]);
+      thisSheet.getRange(thisSheetItemCol.indexOf("$End$"), 2, 1, 2).setValues([[onlyNewItems[j], newProductColoursArray[k]]]);
+      thisSheetItemCol.splice(thisSheetItemCol.indexOf("$End$") - 1, 0, onlyNewItems[j]);
       sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
     }
   }
+  // // Check if new colours in intersection products
+  // for (let j = 0; j < intersectionItems.length; j++) {
+  //   let thisItemOldColoursTab = extraProductMapObj[intersectionItems[j]]["colours"].map(c => c.trim());
+  //   let thisItemNewColoursTab = newExtraProductMap[intersectionItems[j]]["colours"].split(",").map(c => c.trim());
+  //   if (JSON.stringify(thisItemOldColoursTab) != JSON.stringify(thisItemNewColoursTab)) {
+  //     let newColours = thisItemNewColoursTab.filter(x => !thisItemOldColoursTab.include(x));
+  //     let deletedColours = thisItemOldColoursTab.filter(x => !thisItemNewColoursTab.include(x));
+  //     // Add new colours
+  //     for (let k = 0; k < newColours.length; k++) {
+
+  //     }
+  //   }
+  // }
 
 
   // }

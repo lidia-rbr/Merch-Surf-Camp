@@ -45,8 +45,6 @@ $(document).ready(function() {
   }
   document.getElementById('productForm').addEventListener('submit', function(event) {
 
-    console.log("form submitted");
-
     // Check if data correct for sizes
     let validForm = true;
     const sizeInputs = document.querySelectorAll('input[id*="_SizesId"]');
@@ -69,7 +67,7 @@ $(document).ready(function() {
       let formData = {};
       let inputs = this.querySelectorAll('input');
       inputs.forEach(function(input) {
-        formData[input.id.replaceAll("SPACE", " ")] = input.value;
+        formData[input.id.replaceAll("SPACE", " ")] = input.value.trim();
       });
 
       console.log("formData", formData);

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
+    integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
+  </script>
+
+  <script src="https://apis.google.com/js/api.js"></script>
+  <!-- Load the Google API Loader script. -->
+  <script src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+  </script>
+  <?!=include("Form-css");?>
+  <script>
+    google.script.run.withSuccessHandler(displayURL).withFailureHandler(displayErrorMessage).createBlankCopy();
+
+  /**
+   * Display generated spreadsheet URL
+  */
+  function displayURL(res) {
+    console.log(res)
+  $("#loader").hide();
+  $("#result").empty()
+  $("#result").show();
+  $("#result").append('<p>New copy of the file generated:<br><a href=' + res.url + ' target="_blank">' + res.ssName + '</a></p>');
+}
+
+  /**
+  * Display error message if error server side
+  * @param {object} e
+  */
+  function displayErrorMessage(e) {
+    console.log(e)
+    $("#loader").hide();
+    $("#result").empty()
+    $("#result").show();
+    $("#result").append("<p>Oops, something wrong happened... You can call Lidia, Error message:+ " + e + "</p>");
+  }
+
+
+  </script>
+</head>
+
+<body>
+  <div id="loader" style="text-align: center;margin-top: 45px;">
+    <div class="lds-default">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div>
+      <p class="message">Creating a copy of the file</p>
+    </div>
+  </div>
+  <div>
+    <p id='result'></p>
+  </div>
+
+</body>
+
+</html>

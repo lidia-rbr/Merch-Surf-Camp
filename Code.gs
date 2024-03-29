@@ -351,9 +351,41 @@ function createBlankCopy() {
     newSs.deleteSheet(sheet);
     templateSheet.copyTo(newSs).setName(MONTHS_ARRAY[i]).showSheet();
   }
+  updateInventoryForNextMonth(newSs.getId());
   return res;
 }
 
+/**
+ * Insert Stock formulas based on last month current stock values
+ * @param {string} ssId
+ */
+function updateInventoryForNextMonth(ssId) {
+  const ss = SpreadsheetApp.openById(ssId);
+  const settingsSheet = ss.getSheetByName("Settings");
+  const settingsData = settingsSheet.getDataRange().getValues();
+  const settingsDataHeaders = settingsData[0];
+  const colorCol = settingsData.map(x => x[settingsDataHeaders.indexOf("Colour")]).filter(n => n).slice(1);
+  let numberOfRowsInInventory = 0;
+  colorCol.forEach((c) => {
+    numberOfRowsInInventory = numberOfRowsInInventory + c.split(",").length;
+  })
+  const janSheet = ss.getSheetByName("Jan");
+  const janSheetData = janSheet.getDataRange().getValues();
+  const janSheetDataSecondCol = janSheetData.map(x => x[1]);
+  let currentStockFirstCell = "D" + parseInt(janSheetDataSecondCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") + 3);
+  let inventoryFormula = "=prevMonth!" + currentStockFirstCell;
+
+  for (let i = 1; i < MONTHS_ARRAY.length - 1; i++) {
+    let thisSheet = ss.getSheetByName(MONTHS_ARRAY[i]);
+    let formulaForThisSheet = inventoryFormula.replace("prevMonth", MONTHS_ARRAY[i - 1]);
+    let sourceRange = thisSheet.getRange(FIRST_STOCK_ROW, 4);
+    sourceRange.setFormula(formulaForThisSheet);
+    let verticalDestinationRange = thisSheet.getRange(FIRST_STOCK_ROW, 4, numberOfRowsInInventory, 1);
+    sourceRange.autoFill(verticalDestinationRange, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+    let horizontalDestinationRange = thisSheet.getRange(FIRST_STOCK_ROW, 4, numberOfRowsInInventory, NUMBER_OF_SIZES);
+    verticalDestinationRange.autoFill(horizontalDestinationRange, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+  }
+}
 
 
 

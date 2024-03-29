@@ -2,178 +2,178 @@
 
 let newExtraProductMap = {};
 let generalMap = {};
-let validSizes = ["XS","S","M","L","XL","XXL","-"]
+let validSizes = ["XS", "S", "M", "L", "XL", "XXL", "-",""];
 
 $(document).ready(function() {
-    // Add product sections
-    let extraProductMapObj = JSON.parse(extraProductMap);
-    let rowToClone = document.querySelector('#tempProductSection');
-    for (let i = 0; i < Object.keys(extraProductMapObj).length; i++) {
-        let productName = Object.keys(extraProductMapObj)[i];
-        let clonedRow = rowToClone.cloneNode(true);
-        clonedRow.hidden = false;
-        let preID = productName.replaceAll(" ", "SPACE");
-        clonedRow.id = preID;
-        let divs = clonedRow.querySelectorAll('div');
-        // Update section title
-        let h = clonedRow.querySelector('h6');
-        h.innerText = productName;
-        // Update ids
-        let inputs = clonedRow.querySelectorAll('input');
-        let button = clonedRow.querySelector('button');
-        inputs.forEach(function(input, index) {
-            input.id = preID + input.id.replaceAll("temp", "");
-            input.value = ""
-        });
-        divs.forEach(function(div, index) {
-            div.id = preID + div.id.replaceAll("temp", "");
-        });
-        button.id = preID + button.id.replaceAll("temp", "");
-        document.getElementById('productContainer').appendChild(clonedRow);
-        // Function to delete rows
-        button.addEventListener('click', function() {
-            console.log($(this).closest('div').attr('id'));
-            console.log($("#" + $(this).closest('div').attr('id')))
-            document.querySelector("#" + $(this).closest('div').attr('id')).scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest'
-            });
-            $("#" + $(this).closest('div').attr('id')).remove();
-        });
-        // Fill inputs
-        fillInputs(extraProductMapObj, i, preID);
-    }
-    document.getElementById('productForm').addEventListener('submit', function(event) {
+  // Add product sections
+  let extraProductMapObj = JSON.parse(extraProductMap);
+  let rowToClone = document.querySelector('#tempProductSection');
+  for (let i = 0; i < Object.keys(extraProductMapObj).length; i++) {
+    let productName = Object.keys(extraProductMapObj)[i];
+    let clonedRow = rowToClone.cloneNode(true);
+    clonedRow.hidden = false;
+    let preID = productName.replaceAll(" ", "SPACE");
+    clonedRow.id = preID;
+    let divs = clonedRow.querySelectorAll('div');
+    // Update section title
+    let h = clonedRow.querySelector('h6');
+    h.innerText = productName;
+    // Update ids
+    let inputs = clonedRow.querySelectorAll('input');
+    let button = clonedRow.querySelector('button');
+    inputs.forEach(function(input, index) {
+      input.id = preID + input.id.replaceAll("temp", "");
+      input.value = ""
+    });
+    divs.forEach(function(div, index) {
+      div.id = preID + div.id.replaceAll("temp", "");
+    });
+    button.id = preID + button.id.replaceAll("temp", "");
+    document.getElementById('productContainer').appendChild(clonedRow);
+    // Function to delete rows
+    button.addEventListener('click', function() {
+      console.log($(this).closest('div').attr('id'));
+      console.log($("#" + $(this).closest('div').attr('id')))
+      document.querySelector("#" + $(this).closest('div').attr('id')).scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+      $("#" + $(this).closest('div').attr('id')).remove();
+    });
+    // Fill inputs
+    fillInputs(extraProductMapObj, i, preID);
+  }
+  document.getElementById('productForm').addEventListener('submit', function(event) {
 
-        console.log("form submitted");
+    console.log("form submitted");
 
-        // Check if data correct for sizes
-        let validForm = true;
-        const sizeInputs = document.querySelectorAll('input[id*="_SizesId"]');
-        sizeInputs.forEach((i) => {
-          let value = i.value;
-          let valueAsArray = value.split(",").map(v => v.trim());
-          valueAsArray.forEach((s)=> {
-            if (validSizes.indexOf(s) == -1) {
-              validForm = false;
-              $("#"+i.id).addClass("is-invalid");
-            }
-          });
-        });
-if(validForm) {
-
-        $("#productForm").hide();
-        // $("#loader").prop("hidden",false);
-
-        // Rebuild product map
-        let formData = {};
-        let inputs = this.querySelectorAll('input');
-        inputs.forEach(function(input) {
-            formData[input.id.replaceAll("SPACE", " ")] = input.value;
-        });
-
-        console.log("formData", formData);
-        for (let i = 0; i < Object.keys(formData).length; i++) {
-            let item = Object.keys(formData)[i].split("_")[0]
-            // Existing products
-            if (!newExtraProductMap[item] &&
-                item != "temp" &&
-                item != "sellersId" &&
-                item != "paimentTypesId" &&
-                item != "NewColours" &&
-                item != "NewProductName" &&
-                item != "NewSizes") {
-                newExtraProductMap[item] = {};
-                newExtraProductMap[item]["sizes"] = formData[item + "_SizesId"];
-                newExtraProductMap[item]["colours"] = formData[item + "_ColoursId"];
-            }
-            // New product
-            else if (item != "temp" &&
-                item != "sellersId" &&
-                item != "paimentTypesId") {
-                let index = 2;
-                while (formData["NewProductName_" + index]) {
-                    newExtraProductMap[formData["NewProductName_" + index]] = {};
-                    newExtraProductMap[formData["NewProductName_" + index]]["sizes"] = formData["NewSizes_" + index];
-                    newExtraProductMap[formData["NewProductName_" + index]]["colours"] = formData["NewColours_" + index];
-                    index++;
-                }
-            }
-            // Get general
-            else if (item != "temp") {
-                generalMap["sellers"] = formData["sellersId"];
-                generalMap["paimentTypes"] = formData["paimentTypesId"];
-            }
+    // Check if data correct for sizes
+    let validForm = true;
+    const sizeInputs = document.querySelectorAll('input[id*="_SizesId"]');
+    sizeInputs.forEach((i) => {
+      let value = i.value;
+      let valueAsArray = value.split(",").map(v => v.trim());
+      valueAsArray.forEach((s) => {
+        if (validSizes.indexOf(s) == -1) {
+          validForm = false;
+          $("#" + i.id).addClass("is-invalid");
         }
-        $("#loader").prop("hidden", true);
+      });
+    });
+    if (validForm) {
 
-        // Update confirmation message changesNoteIs
-        let message;
-        if (JSON.stringify(newExtraProductMap) == JSON.stringify(extraProductMapObj)) {
-            $('#confirmButton').attr("disabled", true);
-            message = "No modification found.";
-            $("#changesNoteIs").append(message);
-        } else {
-            message = "Deleted and new items will appear here."
-            let deletedItems = Object.keys(extraProductMapObj).filter(x => !Object.keys(newExtraProductMap).includes(x));
-            let newItems = Object.keys(newExtraProductMap).filter(x => !Object.keys(extraProductMapObj).includes(x));
-            if (deletedItems.length > 0) {
-                message = message + "<br><br><b>Deleted items:</b>"
-                for (let i = 0; i < deletedItems.length; i++) {
-                    message = message + "<br>" + deletedItems[i]
-                }
-            }
-            if (newItems.length > 0) {
-                message = message + "<br><br><b>New items:</b>"
-                for (let i = 0; i < newItems.length; i++) {
-                    message = message + "<br>" + newItems[i]
-                }
-            }
-            // message = message + "<br><br>Please confirm these changes";
-            $("#changesNoteIs").append(message);
+      $("#productForm").hide();
+      // $("#loader").prop("hidden",false);
+
+      // Rebuild product map
+      let formData = {};
+      let inputs = this.querySelectorAll('input');
+      inputs.forEach(function(input) {
+        formData[input.id.replaceAll("SPACE", " ")] = input.value;
+      });
+
+      console.log("formData", formData);
+      for (let i = 0; i < Object.keys(formData).length; i++) {
+        let item = Object.keys(formData)[i].split("_")[0]
+        // Existing products
+        if (!newExtraProductMap[item] &&
+          item != "temp" &&
+          item != "sellersId" &&
+          item != "paimentTypesId" &&
+          item != "NewColours" &&
+          item != "NewProductName" &&
+          item != "NewSizes") {
+          newExtraProductMap[item] = {};
+          newExtraProductMap[item]["sizes"] = formData[item + "_SizesId"];
+          newExtraProductMap[item]["colours"] = formData[item + "_ColoursId"];
         }
-        $("#updateConfirmation").prop("hidden", false);
-        //updateConfirmation
-        console.log("newExtraProductMap", newExtraProductMap);
+        // New product
+        else if (item != "temp" &&
+          item != "sellersId" &&
+          item != "paimentTypesId") {
+          let index = 2;
+          while (formData["NewProductName_" + index]) {
+            newExtraProductMap[formData["NewProductName_" + index]] = {};
+            newExtraProductMap[formData["NewProductName_" + index]]["sizes"] = formData["NewSizes_" + index];
+            newExtraProductMap[formData["NewProductName_" + index]]["colours"] = formData["NewColours_" + index];
+            index++;
+          }
+        }
+        // Get general
+        else if (item != "temp") {
+          generalMap["sellers"] = formData["sellersId"];
+          generalMap["paimentTypes"] = formData["paimentTypesId"];
+        }
+      }
+      $("#loader").prop("hidden", true);
+
+      // Update confirmation message changesNoteIs
+      let message;
+      if (JSON.stringify(newExtraProductMap) == JSON.stringify(extraProductMapObj)) {
+        $('#confirmButton').attr("disabled", true);
+        message = "No modification found.";
+        $("#changesNoteIs").append(message);
+      } else {
+        message = "Deleted and new items will appear here."
+        let deletedItems = Object.keys(extraProductMapObj).filter(x => !Object.keys(newExtraProductMap).includes(x));
+        let newItems = Object.keys(newExtraProductMap).filter(x => !Object.keys(extraProductMapObj).includes(x));
+        if (deletedItems.length > 0) {
+          message = message + "<br><br><b>Deleted items:</b>"
+          for (let i = 0; i < deletedItems.length; i++) {
+            message = message + "<br>" + deletedItems[i]
+          }
+        }
+        if (newItems.length > 0) {
+          message = message + "<br><br><b>New items:</b>"
+          for (let i = 0; i < newItems.length; i++) {
+            message = message + "<br>" + newItems[i]
+          }
+        }
+        // message = message + "<br><br>Please confirm these changes";
+        $("#changesNoteIs").append(message);
+      }
+      $("#updateConfirmation").prop("hidden", false);
+      //updateConfirmation
+      console.log("newExtraProductMap", newExtraProductMap);
     }
+  });
+  // newProductForm
+  document.getElementById('addProductButton').addEventListener('click', function(event) {
+    let rowToClone = document.querySelector('#newProductForm');
+    let clonedRow = rowToClone.cloneNode(true);
+    preID = $(this).closest('div').attr('id');
+    clonedRow.hidden = false;
+    let inputs = clonedRow.querySelectorAll('input');
+    let childrenIndex = $('#newProductContainer').children().length + 2;
+    inputs.forEach(function(input, index) {
+      input.id = input.id.split("_")[0] + '_' + childrenIndex; // Append an increment
+      input.value = "";
     });
-    // newProductForm
-    document.getElementById('addProductButton').addEventListener('click', function(event) {
-        let rowToClone = document.querySelector('#newProductForm');
-        let clonedRow = rowToClone.cloneNode(true);
-        preID = $(this).closest('div').attr('id');
-        clonedRow.hidden = false;
-        let inputs = clonedRow.querySelectorAll('input');
-        let childrenIndex = $('#newProductContainer').children().length + 2;
-        inputs.forEach(function(input, index) {
-            input.id = input.id.split("_")[0] + '_' + childrenIndex; // Append an increment
-            input.value = "";
-        });
-        document.getElementById('newProductContainer').appendChild(clonedRow);
-        clonedRow.scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest'
-        });
+    document.getElementById('newProductContainer').appendChild(clonedRow);
+    clonedRow.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest'
     });
-    // Go back to form
-    document.getElementById('goBackToFormButton').addEventListener('click', function(event) {
-        $("#updateConfirmation").prop("hidden", true);
-        $("#changesNoteIs").empty()
-        $("#productForm").show();
-    });
-    // Confirm changes
-    document.getElementById('confirmButton').addEventListener('click', function(event) {
-        $("#updateConfirmation").hide();
-        $("#loader").attr("hidden",false);
-        google.script.run.withSuccessHandler(closeModal).withFailureHandler(displayErrorMessage).updateSheets(extraProductMapObj, newExtraProductMap, generalMap);
-    });
+  });
+  // Go back to form
+  document.getElementById('goBackToFormButton').addEventListener('click', function(event) {
+    $("#updateConfirmation").prop("hidden", true);
+    $("#changesNoteIs").empty()
+    $("#productForm").show();
+  });
+  // Confirm changes
+  document.getElementById('confirmButton').addEventListener('click', function(event) {
+    $("#updateConfirmation").hide();
+    $("#loader").attr("hidden", false);
+    google.script.run.withSuccessHandler(closeModal).withFailureHandler(displayErrorMessage).updateSheets(extraProductMapObj, newExtraProductMap, generalMap);
+  });
 })
 
 /**
  * Function to close modal when process done
-*/
+ */
 function closeModal() {
-    google.script.host.close();
+  google.script.host.close();
 }
 
 /**
@@ -183,45 +183,45 @@ function closeModal() {
  * @param {preID} string
  */
 function fillInputs(extraProductMapObj, i, preID) {
-    // Sizes
-    let selectSizesId = '#' + preID + '_SizesId';
-    $(selectSizesId).val(extraProductMapObj[preID.replaceAll("SPACE", " ")]["sizes"]);
+  // Sizes
+  let selectSizesId = '#' + preID + '_SizesId';
+  $(selectSizesId).val(extraProductMapObj[preID.replaceAll("SPACE", " ")]["sizes"]);
 
-    // Colours
-    let selectColoursId = '#' + preID + '_ColoursId';
-    $(selectColoursId).val(extraProductMapObj[preID.replaceAll("SPACE", " ")]["colours"]);
+  // Colours
+  let selectColoursId = '#' + preID + '_ColoursId';
+  $(selectColoursId).val(extraProductMapObj[preID.replaceAll("SPACE", " ")]["colours"]);
 }
 /**
  * When data correctly added to sheet, reset form 
  */
 function resetForm() {
-    document.getElementById("salesForm").reset();
-    let divsWithExtraRowContainer = $("div[id*='-extraRowContainer']");
-    // Loop through each selected container to empty them
-    divsWithExtraRowContainer.each(function() {
-        $(this).empty()
-    });
-    $("#salesForm").show();
-    $("#loader").hide();
+  document.getElementById("salesForm").reset();
+  let divsWithExtraRowContainer = $("div[id*='-extraRowContainer']");
+  // Loop through each selected container to empty them
+  divsWithExtraRowContainer.each(function() {
+    $(this).empty()
+  });
+  $("#salesForm").show();
+  $("#loader").hide();
 }
 /**
  * Display error message if error server side
  */
 function displayErrorMessage(e) {
-    console.log(e)
-    $("#loader").hide();
-    $("#result").empty()
-    $("#result").show();
-    $("#result").append("<p>Oops, something wrong happened... You can call Lidia, Error message:+ " + e + "</p>");
+  console.log(e)
+  $("#loader").hide();
+  $("#result").empty()
+  $("#result").show();
+  $("#result").append("<p>Oops, something wrong happened... You can call Lidia, Error message:+ " + e + "</p>");
 }
 // Function to disable select elements with less than 2 options
 function disableSelectsWithFewOptions() {
-    var selects = document.querySelectorAll('select');
-    selects.forEach(function(select) {
-        if (select.options.length < 2) {
-            select.disabled = true;
-        }
-    });
+  var selects = document.querySelectorAll('select');
+  selects.forEach(function(select) {
+    if (select.options.length < 2) {
+      select.disabled = true;
+    }
+  });
 }
 // Call the function when the page is loaded
 window.addEventListener('load', disableSelectsWithFewOptions);

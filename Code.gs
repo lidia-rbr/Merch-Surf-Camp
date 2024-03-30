@@ -270,7 +270,7 @@ function updateSheets(extraProductMapObj, newExtraProductMap, generalMap) {
             ]);
             thisSheetItemCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, onlyNewItems[j]);
             thisSheetColourCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, newColours[k]);
-            sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+            // sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
 
             // Current stock
             sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
@@ -310,6 +310,7 @@ function updateSheets(extraProductMapObj, newExtraProductMap, generalMap) {
       }
     }
   }
+  updateInventoryForNextMonth(ss.getId(), MONTHS_ARRAY.indexOf(ss.getActiveSheet().getName()));
 }
 
 /**
@@ -351,7 +352,7 @@ function createBlankCopy() {
     newSs.deleteSheet(sheet);
     templateSheet.copyTo(newSs).setName(MONTHS_ARRAY[i]).showSheet();
   }
-  updateInventoryForNextMonth(newSs.getId());
+  updateInventoryForNextMonth(newSs.getId(), 1);
   return res;
 }
 
@@ -359,7 +360,7 @@ function createBlankCopy() {
  * Insert Stock formulas based on last month current stock values
  * @param {string} ssId
  */
-function updateInventoryForNextMonth(ssId) {
+function updateInventoryForNextMonth(ssId, monthIndex) {
   const ss = SpreadsheetApp.openById(ssId);
   const settingsSheet = ss.getSheetByName("Settings");
   const settingsData = settingsSheet.getDataRange().getValues();
@@ -375,7 +376,7 @@ function updateInventoryForNextMonth(ssId) {
   let currentStockFirstCell = "D" + parseInt(janSheetDataSecondCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") + 3);
   let inventoryFormula = "=prevMonth!" + currentStockFirstCell;
 
-  for (let i = 1; i < MONTHS_ARRAY.length - 1; i++) {
+  for (let i = monthIndex; i < MONTHS_ARRAY.length - 1; i++) {
     let thisSheet = ss.getSheetByName(MONTHS_ARRAY[i]);
     let formulaForThisSheet = inventoryFormula.replace("prevMonth", MONTHS_ARRAY[i - 1]);
     let sourceRange = thisSheet.getRange(FIRST_STOCK_ROW, 4);
@@ -386,5 +387,6 @@ function updateInventoryForNextMonth(ssId) {
     verticalDestinationRange.autoFill(horizontalDestinationRange, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
   }
 }
+
 
 

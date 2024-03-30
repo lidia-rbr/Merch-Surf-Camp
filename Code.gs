@@ -117,7 +117,7 @@ function treatAndPrintClientSideData(formData) {
         let row = [
           formData["datePickerInput"],
           formData["sellerId"],
-          items[i].replaceAll("-", " "),
+          items[i].replaceAll("SPACE", " "),
           formData[items[i] + "_SizeId_" + index],
           formData[items[i] + "_ColourId_" + index],
           formData[items[i] + "_CashCardId_" + index],
@@ -205,7 +205,7 @@ function updateSheets(extraProductMapObj, newExtraProductMap, generalMap) {
     for (let j = 0; j < onlyNewItems.length; j++) {
       let newProductColoursArray = newExtraProductMap[onlyNewItems[j]]["colours"].split(",");
       for (let k = 0; k < newProductColoursArray.length; k++) {
-        let thisColourProduct = (newProductColoursArray[k] == "") ? "-" : newProductColoursArray[k];
+        let thisColourProduct = (newProductColoursArray[k] == "") ? "-" : newProductColoursArray[k].trim();
 
         // Inventory
         let sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);
@@ -217,7 +217,7 @@ function updateSheets(extraProductMapObj, newExtraProductMap, generalMap) {
         ]);
         thisSheetItemCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, onlyNewItems[j]);
         thisSheetColourCol.splice(thisSheetItemCol.indexOf("Current Stock Levels (AUTOMATICALLY FILLED)") - 1, 0, newProductColoursArray[k]);
-        sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+        // sourceRange.autoFill(destination, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
 
         // Current stock
         sourceRange = thisSheet.getRange(thisSheetItemCol.indexOf("Total Sold (AUTOMATICALLY FILLED)") - 1, 4, 1, NUMBER_OF_COL_TODELETE - 2);

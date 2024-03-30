@@ -72,13 +72,13 @@
     let selects = this.querySelectorAll('select');
     inputs.forEach(function(input) {
       if (input.type != "checkbox") {
-        formData[input.id] = input.value;
+        formData[input.id] = input.value.trim();
       } else {
-        formData[input.id] = $("#" + input.id).prop("checked")
+        formData[input.id] = $("#" + input.id).prop("checked");
       }
     });
     selects.forEach(function(select) {
-      formData[select.id] = select.value;
+      formData[select.id] = select.value.trim();
     });
     // Log form data to console
     console.log(formData);
@@ -135,7 +135,7 @@ function fillDropDownsAndAssignButton(extraProductMapObj, i, preID) {
  */
 function resetForm() {
   document.getElementById("salesForm").reset();
-  let divsWithExtraRowContainer = $("div[id*='-extraRowContainer']"); 
+  let divsWithExtraRowContainer = $("div[id*='_extraRowContainer']"); 
   // Loop through each selected container to empty them
   divsWithExtraRowContainer.each(function() {
     $(this).empty()

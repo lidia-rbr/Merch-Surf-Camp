@@ -184,7 +184,6 @@ function oldupdateSheets(extraProductMapObj, newExtraProductMap, generalMap) {
     formattedItemsArray.push(row);
     nbOfProducts = nbOfProducts + newExtraProductMap[newItems[i]]["colours"].split(",").length;
   }
-  console.log("nbOfProducts", nbOfProducts)
   settingsSheet.getRange(2, 1, settingsSheet.getLastRow(), formattedItemsArray[0].length).clearContent();
   settingsSheet.getRange(2, 1, formattedItemsArray.length, formattedItemsArray[0].length).setValues(formattedItemsArray);
 
@@ -376,140 +375,161 @@ function updateSheets(extraProductMapObj, newExtraProductMap, generalMap) {
   }
 }
 
-function rebuildProductSections(oldNumberOfProducts, settingsValues, sheetName) {
+function test() {
+    const oldNumberOfProducts = 6;
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const thisSheet = ss.getSheetByName(sheetName);
-    let thisSheetData = thisSheet.getDataRange().getValues();
-    let thisSheetItemCol = thisSheetData.map(x => x[ITEM_COL]);
+    const settingsSheet = ss.getSheetByName("Settings");
+    const settingsValues = settingsSheet.getDataRange().getValues();
+    const sheetName = "April";
+    rebuildProductSections(oldNumberOfProducts, settingsValues, sheetName)
 
-    // const settingsValues = ss.getSheetByName("Settings").getDataRange().getValues();
-    const settingsValuesHeaders = settingsValues[0];
-    const items = settingsValues.map(x => x[settingsValuesHeaders.indexOf("Items")]);
-    items.shift();
-    const colours = settingsValues.map(x => x[settingsValuesHeaders.indexOf("Colour")]);
-    const nbOfProducts = colours.flatMap(colour => colour.split(',')).length - 1;
-    colours.shift();
+}
 
-    // const nbOfProducts = 8;
+function rebuildProductSections(oldNumberOfProducts, settingsValues, sheetName) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const thisSheet = ss.getSheetByName(sheetName);
+  let thisSheetData = thisSheet.getDataRange().getValues();
+  let thisSheetItemCol = thisSheetData.map(x => x[ITEM_COL]);
 
-    // Get category indexes
-    let productIndexes = thisSheetItemCol.reduce((indexes, item, index) => {
-        if (item === 'Products') {
-            indexes.push(index);
-        }
-        return indexes;
-    }, []);
+  // const settingsValues = ss.getSheetByName("Settings").getDataRange().getValues();
+  const settingsValuesHeaders = settingsValues[0];
+  const items = settingsValues.map(x => x[settingsValuesHeaders.indexOf("Items")]);
+  items.shift();
+  const colours = settingsValues.map(x => x[settingsValuesHeaders.indexOf("Colour")]);
+  const nbOfProducts = colours.flatMap(colour => colour.split(',')).length - 1;
+  colours.shift();
 
-    const oldInventory = thisSheet.getRange(productIndexes[0] + 1, 2, oldNumberOfProducts + 1, 9).getValues();
-    const oldInventoryHeaders = oldInventory.shift();
-    const oldProductKeys = oldInventory.map(row => `${row[0]}-${row[1]}`);
-
-    // Clear content for each category
-    for (let i = 0; i < productIndexes.length; i++) {
-        thisSheet.getRange(productIndexes[i] + 2, 2, oldNumberOfProducts, 10).clearContent();
+  // Get category indexes
+  let productIndexes = thisSheetItemCol.reduce((indexes, item, index) => {
+    if (item === 'Products') {
+      indexes.push(index);
     }
+    return indexes;
+  }, []);
 
-    // Delete rows, except first one to keep formatting
-    let rangeToDelete;
-    for (let i = productIndexes.length - 1; i >= 0; i--) {
-        console.log(productIndexes[i] + 2);
-        rangeToDelete = thisSheet.getRange(productIndexes[i] + 3, 2, oldNumberOfProducts - 1, 10);
-        rangeToDelete.deleteCells(SpreadsheetApp.Dimension.ROWS);
-    }
+  const oldInventory = thisSheet.getRange(productIndexes[0] + 1, 2, oldNumberOfProducts + 1, 9).getValues();
+  const oldInventoryFormulas = thisSheet.getRange(productIndexes[0] + 2, 2, oldNumberOfProducts + 1, 9).getFormulas();
+  const oldInventoryHeaders = oldInventory.shift();
+  const oldProductKeys = oldInventory.map(row => `${row[0]}-${row[1]}`);
 
-    // Build new data from settings tab
-    let newData = [];
-    let newDataWithOldInventory = [];
-    for (let i = 0; i < items.length; i++) {
-        let coloursTab = colours[i].split(",");
-        for (let j = 0; j < coloursTab.length; j++) {
-            let row = new Array(10);
-            row[0] = items[i]
-            row[1] = coloursTab[j].trim();
-            let productKey = `${items[i].trim()}-${coloursTab[j].trim()}`;
-            // Check if value existed before and retrieve inventory data if any
-            // If no data, inject formula (except for Jan sheet)
-            if (oldProductKeys.indexOf(productKey) > -1) {
-                let oldRow = oldInventory[oldProductKeys.indexOf(productKey)];
-                if (MONTHS_ARRAY[MONTHS_ARRAY.indexOf(sheetName) - 1]) {
-                    let oldRowWithFormulas = oldRow.map((c, index) =>
-                        c === ""
-                            ? `=${MONTHS_ARRAY[MONTHS_ARRAY.indexOf(sheetName) - 1]}!${String.fromCharCode(index + 66)}${nbOfProducts + 12 + j + i}`
-                            : c
-                    );
-                    oldRowWithFormulas.push("");
-                    newData.push(row);
-                    newDataWithOldInventory.push(oldRowWithFormulas);
-                } else {
-                    oldRow.push("");
-                    newDataWithOldInventory.push(oldRow);
-                    newData.push(row);
-                }
-            }
-            else {
-                newData.push(row);
-                newDataWithOldInventory.push(row);
-            }
+  // Clear content for each category
+  for (let i = 0; i < productIndexes.length; i++) {
+    thisSheet.getRange(productIndexes[i] + 2, 2, oldNumberOfProducts, 10).clearContent();
+  }
+
+  // Delete rows, except first one to keep formatting
+  let rangeToDelete;
+  for (let i = productIndexes.length - 1; i >= 0; i--) {
+    console.log(productIndexes[i] + 2);
+    rangeToDelete = thisSheet.getRange(productIndexes[i] + 3, 2, oldNumberOfProducts - 1, 10);
+    rangeToDelete.deleteCells(SpreadsheetApp.Dimension.ROWS);
+  }
+
+  // Build new data from settings tab
+  let newData = [];
+  let newDataWithOldInventory = [];
+  for (let i = 0; i < items.length; i++) {
+    let coloursTab = colours[i].split(",");
+    for (let j = 0; j < coloursTab.length; j++) {
+      let row = new Array(10);
+      row[0] = items[i]
+      row[1] = coloursTab[j].trim();
+      let productKey = `${items[i].trim()}-${coloursTab[j].trim()}`;
+      // Check if value existed before and retrieve inventory data if any
+      // If no data, inject formula (except for Jan sheet)
+      if (oldProductKeys.indexOf(productKey) > -1) {
+        let oldRow = oldInventoryFormulas[oldProductKeys.indexOf(productKey)];
+        if (MONTHS_ARRAY[MONTHS_ARRAY.indexOf(sheetName) - 1]) {
+          let oldRowWithFormulas = oldRow.map((c, index) =>
+            c === ""
+              ? oldInventory[oldProductKeys.indexOf(productKey)][index]
+              : c
+          );
+          oldRowWithFormulas.push("");
+          newData.push(row);
+          newDataWithOldInventory.push(oldRowWithFormulas);
+        } else {
+          oldRow.push("");
+          newDataWithOldInventory.push(oldRow);
+          newData.push(row);
         }
-    }
-
-    // Reinject data
-    let totalSold = thisSheet.getRange(productIndexes[2] + 4 - oldNumberOfProducts * 2, 2, newData.length - 1, 10);
-    totalSold.insertCells(SpreadsheetApp.Dimension.ROWS);
-    thisSheet.getRange(productIndexes[2] + 4 - oldNumberOfProducts * 2, 2, newData.length, 10).setValues(newData);
-
-    let currentStock = thisSheet.getRange(productIndexes[1] + 3 - oldNumberOfProducts, 2, newData.length - 1, 10);
-    currentStock.insertCells(SpreadsheetApp.Dimension.ROWS);
-    thisSheet.getRange(productIndexes[1] + 3 - oldNumberOfProducts, 2, newData.length, 10).setValues(newData);
-
-    let inventory = thisSheet.getRange(productIndexes[0] + 2, 2, newData.length - 1, 10);
-    inventory.insertCells(SpreadsheetApp.Dimension.ROWS);
-    thisSheet.getRange(productIndexes[0] + 2, 2, newData.length, 10).setValues(newDataWithOldInventory);
-
-    // Get new indexes
-    thisSheetData = thisSheet.getDataRange().getValues();
-    thisSheetItemCol = thisSheetData.map(x => x[ITEM_COL]);
-    let newProductIndexes = thisSheetItemCol.reduce((indexes, item, index) => {
-        if (item === 'Products') {
-            indexes.push(index);
+      }
+      else {
+        newData.push(row);
+        if (MONTHS_ARRAY[MONTHS_ARRAY.indexOf(sheetName) - 1]) {
+          // Row with formula for inventory
+          let inventoryRow = new Array(10);
+          inventoryRow[0] = items[i]
+          inventoryRow[1] = coloursTab[j].trim();
+          inventoryRowWithFormulas = inventoryRow.map((c, index) =>
+            c === ""
+              ? `=${MONTHS_ARRAY[MONTHS_ARRAY.indexOf(sheetName) - 1]}!${String.fromCharCode(index + 66)}${nbOfProducts + 12 + j + i}`
+              : c);
+          newDataWithOldInventory.push(inventoryRowWithFormulas);
+        } else {
+          newDataWithOldInventory.push(row);
         }
-        return indexes;
-    }, []);
+      }
+    }
+  }
 
-    // Reinject formulas
-    // Total Sold (AUTOMATICALLY FILLED)
-    // Fill first row
-    let totalSoldFirstCellRange = thisSheet.getRange(newProductIndexes[2] + 2, 4);
-    totalSoldFirstCellRange.setFormula(`=SUMIFS($S$4:$S, $O$4:$O, $B${newProductIndexes[2] + 2}, $P$4:$P, D$${newProductIndexes[2] + 1}, $Q$4:$Q, $C${newProductIndexes[2] + 2})`);
-    let totalSoldFirstRowRange = thisSheet.getRange(newProductIndexes[2] + 2, 4, 1, NUMBER_OF_SIZES);
-    totalSoldFirstCellRange.autoFill(totalSoldFirstRowRange, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
-    thisSheet.getRange(newProductIndexes[2] + 2, 11).setFormula(`=SUM(D${newProductIndexes[2] + 2}:J${newProductIndexes[2] + 2})`);
-    // Expand first row
-    thisSheet.getRange(newProductIndexes[2] + 2, 4, 1, NUMBER_OF_SIZES + 1).autoFill(
-        thisSheet.getRange(newProductIndexes[2] + 2, 4, newData.length, NUMBER_OF_SIZES + 1),
-        SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES
-    );
+  // Reinject data
+  let totalSold = thisSheet.getRange(productIndexes[2] + 4 - oldNumberOfProducts * 2, 2, newData.length - 1, 10);
+  totalSold.insertCells(SpreadsheetApp.Dimension.ROWS);
+  thisSheet.getRange(productIndexes[2] + 4 - oldNumberOfProducts * 2, 2, newData.length, 10).setValues(newData);
 
-    // Total Sold (AUTOMATICALLY FILLED)
-    // Fill first row =D9-D27
-    let currentStockCellRange = thisSheet.getRange(newProductIndexes[1] + 2, 4);
-    currentStockCellRange.setFormula(`=D${newProductIndexes[0] + 2}-D${newProductIndexes[2] + 2}`);
-    let currentStockFirstRowRange = thisSheet.getRange(newProductIndexes[1] + 2, 4, 1, NUMBER_OF_SIZES);
-    currentStockCellRange.autoFill(currentStockFirstRowRange, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
-    thisSheet.getRange(newProductIndexes[1] + 2, 11).setFormula(`=SUM(D${newProductIndexes[1] + 2}:J${newProductIndexes[1] + 2})`);
-    // Expand first row
-    thisSheet.getRange(newProductIndexes[1] + 2, 4, 1, NUMBER_OF_SIZES + 1).autoFill(
-        thisSheet.getRange(newProductIndexes[1] + 2, 4, newData.length, NUMBER_OF_SIZES + 1),
-        SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES
-    );
+  let currentStock = thisSheet.getRange(productIndexes[1] + 3 - oldNumberOfProducts, 2, newData.length - 1, 10);
+  currentStock.insertCells(SpreadsheetApp.Dimension.ROWS);
+  thisSheet.getRange(productIndexes[1] + 3 - oldNumberOfProducts, 2, newData.length, 10).setValues(newData);
 
-    // Inventory
-    thisSheet.getRange(newProductIndexes[0] + 2, 11).setFormula(`=SUM(D${newProductIndexes[0] + 2}:J${newProductIndexes[0] + 2})`);
-    // Expand first row
-    thisSheet.getRange(newProductIndexes[0] + 2, 11).autoFill(
-        thisSheet.getRange(newProductIndexes[0] + 2, 11, newData.length, 1),
-        SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES
-    );
+  let inventory = thisSheet.getRange(productIndexes[0] + 2, 2, newData.length - 1, 10);
+  inventory.insertCells(SpreadsheetApp.Dimension.ROWS);
+  thisSheet.getRange(productIndexes[0] + 2, 2, newData.length, 10).setValues(newDataWithOldInventory);
+
+  // Get new indexes
+  thisSheetData = thisSheet.getDataRange().getValues();
+  thisSheetItemCol = thisSheetData.map(x => x[ITEM_COL]);
+  let newProductIndexes = thisSheetItemCol.reduce((indexes, item, index) => {
+    if (item === 'Products') {
+      indexes.push(index);
+    }
+    return indexes;
+  }, []);
+
+  // Reinject formulas
+  // Total Sold (AUTOMATICALLY FILLED)
+  // Fill first row
+  let totalSoldFirstCellRange = thisSheet.getRange(newProductIndexes[2] + 2, 4);
+  totalSoldFirstCellRange.setFormula(`=SUMIFS($S$4:$S, $O$4:$O, $B${newProductIndexes[2] + 2}, $P$4:$P, D$${newProductIndexes[2] + 1}, $Q$4:$Q, $C${newProductIndexes[2] + 2})`);
+  let totalSoldFirstRowRange = thisSheet.getRange(newProductIndexes[2] + 2, 4, 1, NUMBER_OF_SIZES);
+  totalSoldFirstCellRange.autoFill(totalSoldFirstRowRange, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+  thisSheet.getRange(newProductIndexes[2] + 2, 11).setFormula(`=SUM(D${newProductIndexes[2] + 2}:J${newProductIndexes[2] + 2})`);
+  // Expand first row
+  thisSheet.getRange(newProductIndexes[2] + 2, 4, 1, NUMBER_OF_SIZES + 1).autoFill(
+    thisSheet.getRange(newProductIndexes[2] + 2, 4, newData.length, NUMBER_OF_SIZES + 1),
+    SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES
+  );
+
+  // Total Sold (AUTOMATICALLY FILLED)
+  // Fill first row =D9-D27
+  let currentStockCellRange = thisSheet.getRange(newProductIndexes[1] + 2, 4);
+  currentStockCellRange.setFormula(`=D${newProductIndexes[0] + 2}-D${newProductIndexes[2] + 2}`);
+  let currentStockFirstRowRange = thisSheet.getRange(newProductIndexes[1] + 2, 4, 1, NUMBER_OF_SIZES);
+  currentStockCellRange.autoFill(currentStockFirstRowRange, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+  thisSheet.getRange(newProductIndexes[1] + 2, 11).setFormula(`=SUM(D${newProductIndexes[1] + 2}:J${newProductIndexes[1] + 2})`);
+  // Expand first row
+  thisSheet.getRange(newProductIndexes[1] + 2, 4, 1, NUMBER_OF_SIZES + 1).autoFill(
+    thisSheet.getRange(newProductIndexes[1] + 2, 4, newData.length, NUMBER_OF_SIZES + 1),
+    SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES
+  );
+
+  // Inventory
+  thisSheet.getRange(newProductIndexes[0] + 2, 11).setFormula(`=SUM(D${newProductIndexes[0] + 2}:J${newProductIndexes[0] + 2})`);
+  // Expand first row
+  thisSheet.getRange(newProductIndexes[0] + 2, 11).autoFill(
+    thisSheet.getRange(newProductIndexes[0] + 2, 11, newData.length, 1),
+    SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES
+  );
 }
 
 
@@ -589,12 +609,4 @@ function updateInventoryForNextMonth(ssId, monthIndex) {
     verticalDestinationRange.autoFill(horizontalDestinationRange, SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
   }
   return safeMonthIndex;
-}
-
-
-function testUpdate() {
-  const index = 1;
-  const ssId = "1rhhvymbRnv_oLc_FvsMKUqiw5usYcc5nDIQsbnqnDks";
-  const monthIndexUsed = updateInventoryForNextMonth(ssId, index);
-  console.log(monthIndexUsed)
 }
